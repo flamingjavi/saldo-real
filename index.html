@@ -696,8 +696,19 @@ function renderC(arr){
 
 function renderAccts(){
   var arr=Object.values(S.cuentas),h='';
+  // General card FIRST
+  h+='<div class="ac'+(S.acctKey===null?' sel':'')+'" data-a="sa" data-k="__general__">';
+  h+='<div class="ac-ico">🏠</div><div class="ac-nom">General</div>';
+  h+='<div class="ac-bal">'+fQ(S.base)+'</div></div>';
+  // Custom accounts
   arr.forEach(function(a){
-    h+='<div class="ac'+(S.acctKey===a.fbKey?' sel':'')+'" data-a="sa" data-k="'+a.fbKey+'"><div class="ac-ico">'+a.emoji+'</div><div class="ac-nom">'+a.nombre+'</div><div class="ac-bal">'+fQ(a.saldo)+'</div></div>';
+    var sel=S.acctKey===a.fbKey;
+    h+='<div class="ac'+(sel?' sel':'')+'" style="position:relative" data-a="sa" data-k="'+a.fbKey+'">';
+    h+='<div class="ac-ico">'+a.emoji+'</div>';
+    h+='<div class="ac-nom">'+a.nombre+'</div>';
+    h+='<div class="ac-bal">'+fQ(a.saldo)+'</div>';
+    h+='<button data-a="del-acct" data-k="'+a.fbKey+'" style="position:absolute;top:4px;right:4px;background:rgba(255,58,58,.2);border:none;border-radius:50%;width:18px;height:18px;font-size:10px;color:#ff3a3a;cursor:pointer;line-height:1;padding:0">✕</button>';
+    h+='</div>';
   });
   h+='<div class="ac-add" data-a="na"><div class="ac-plus">＋</div><div class="ac-lbl">Nueva</div></div>';
   G('acctRow').innerHTML=h;
@@ -968,9 +979,10 @@ document.addEventListener('click',function(e){
     return;
   }
 
-  var ac=t.dataset.a||(t.parentElement&&t.parentElement.dataset.a);
-  var el=t.dataset.a?t:(t.parentElement&&t.parentElement.dataset.a?t.parentElement:null);
-  if(!el)return;
+  // Walk up DOM to find closest element with data-a (most specific first)
+  var el=t;
+  while(el && el!==document.body && !el.dataset.a) el=el.parentElement;
+  if(!el||!el.dataset.a)return;
   var a=el.dataset.a,k=el.dataset.k;
 
   if(a==='tg'){DB.ref('items/'+k+'/on').set(el.dataset.v==='1');return;}
@@ -1013,7 +1025,21 @@ document.addEventListener('click',function(e){
     return;
   }
   if(a==='dl'){if(!confirm('¿Eliminar?'))return;var tipo=el.dataset.t;if(tipo==='p')DB.ref('prestamos/'+k).remove();else DB.ref('creditos/'+k).remove();return;}
-  if(a==='sa'){S.acctKey=k;renderAccts();return;}
+  if(a==='sa'){
+    S.acctKey = k==='__general__' ? null : k;
+    renderAccts();
+    return;
+  }
+  if(a==='del-acct'){
+    e.stopPropagation();
+    var acct = S.cuentas[k];
+    if(!acct) return;
+    if(!confirm('¿Eliminar la cuenta "'+acct.nombre+'"?')) return;
+    DB.ref('cuentas/'+k).remove();
+    if(S.acctKey===k) S.acctKey=null;
+    addLog('saldo','Cuenta eliminada: '+acct.nombre,0);
+    return;
+  }
   if(a==='na'){S.editAcctKey=null;S.acctEmo='🏦';G('OvCuentaTit').textContent='Nueva cuenta';G('InCuentaNom').value='';G('InCuentaBal').value='';document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae==='🏦');});openOv('OvCuenta');return;}
   if(a==='non'){
     if(!('Notification'in window)){alert('No soportado.');return;}
