@@ -571,7 +571,7 @@ const db=firebase.database();
 const AUTH=firebase.auth();
 let currentUID=null;
 function initRF(uid){currentUID=uid;var u='users/'+uid;rSaldo=db.ref(u+'/saldo');rGastos=db.ref(u+'/items');rIngresos=db.ref(u+'/ingresos');rLog=db.ref(u+'/log');rPrestamos=db.ref(u+'/prestamos');rCreditos=db.ref(u+'/creditos');rCuentas=db.ref(u+'/cuentas');}
-const rSaldo=db.ref('saldo'), rGastos=db.ref('items'), rIngresos=db.ref('ingresos'), rLog=db.ref('log'), rPrestamos=db.ref('prestamos'), rCreditos=db.ref('creditos');
+// refs set by initRF()
 
 // ESTADO
 const EG=['📺','🎵','🎮','🏋️','📱','☁️','🛒','🍔','⛽','💊','📚','🏠','✈️','💈','🎬','🧴','🐾','💳','🔌','🍕','☕','🚗','💡','🌐'];
@@ -771,10 +771,10 @@ function renderCreditos(arr){
       '</div>'+
       (abA.length?'<div class="abonos-list">'+abA.slice(-3).map(function(a){return '<div class="abono-item"><span class="abono-val">+'+fQ(a.monto)+'</span><span class="abono-fecha">'+fH(a.ts)+'</span></div>';}).join('')+'</div>':'')+
       (!c.liquidado?'<div class="loan-actions">'+
-        '<button class="btn-abonar" onclick="abrirAbonoC(''+c.fbKey+'',''+c.nombre+'','+pend+')">＋ Registrar cuota</button>'+
-        '<button class="btn-liquidar" onclick="liquidarCredito(''+c.fbKey+'','+pend+')">✓ Liquidar</button>'+
-        '<button class="btn-del-loan" onclick="delC(''+c.fbKey+'')">🗑️</button>'+
-      '</div>':'<div class="loan-actions"><button class="btn-del-loan" style="flex:1" onclick="delC(''+c.fbKey+'')">🗑️ Eliminar</button></div>')+
+        '<button class="btn-abonar" onclick="abrirAbonoC(\''+c.fbKey+'\',\''+c.nombre+'\','+pend+')">+ Registrar cuota</button>'+
+        '<button class="btn-liquidar" onclick="liquidarCredito(\''+c.fbKey+'\','+pend+')">✓ Liquidar</button>'+
+        '<button class="btn-del-loan" onclick="delC(\''+c.fbKey+'\')">🗑️</button>'+
+      '</div>':'<div class="loan-actions"><button class="btn-del-loan" style="flex:1" onclick="delC(\''+c.fbKey+'\')">🗑️ Eliminar</button></div>')+
     '</div>';
   }).join('');
 }
@@ -827,7 +827,7 @@ rPrestamos.on('value',s=>{const r=s.val()||{};prestamos={};Object.entries(r).for
 rCreditos.on('value',s=>{const r=s.val()||{};creditos={};Object.entries(r).forEach(([k,v])=>{creditos[k]={...v,fbKey:k};});render();});
 
 // ACCIONES GASTOS
-window.toggleG=function(k,v){return db.ref('items/'+k+'/on').set(v);
+window.toggleG=function(k,v){return db.ref('items/'+k+'/on').set(v);};
 window.delG=function(k,n,m){if(!confirm('¿Eliminar este gasto?'))return;log('remove','Gasto eliminado: '+n,-m);db.ref('items/'+k).remove();delete notifIds[k];localStorage.setItem('nids',JSON.stringify(notifIds));};
 window.cicloEG=function(k){const cur=(gastos[k]&&gastos[k].emoji)||EG[0];db.ref('items/'+k+'/emoji').set(EG[(EG.indexOf(cur)+1)%EG.length]);};
 
@@ -924,7 +924,7 @@ window.guardarPrestamo=function(){
 };
 
 // MODALES
-window.abrirModal=function(tipo){{
+window.abrirModal=function(tipo){
   if(tipo==='gasto'){
     renderEG('egGasto',EG,eG,'sEG');
     ['gNombre','gMonto','gDia'].forEach(id=>document.getElementById(id).value='');
