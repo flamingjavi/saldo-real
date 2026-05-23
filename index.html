@@ -1023,6 +1023,14 @@ window.setCreditType=function(t){
 fetchTasa();
 
 // GOOGLE AUTH
+// Fallback: show button after 3s if auth hasn't fired
+setTimeout(()=>{
+  const btn=document.getElementById('LBtn');
+  const spin=document.getElementById('LSpin');
+  if(btn && btn.style.display==='none'){btn.style.display='flex';}
+  if(spin) spin.style.display='none';
+},3000);
+
 AUTH.onAuthStateChanged(user=>{
   const ls=document.getElementById('LS'),ub=document.getElementById('UBar'),aw=document.getElementById('AW');
   document.getElementById('LSpin').style.display='none';
