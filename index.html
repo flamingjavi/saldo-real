@@ -252,6 +252,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 </style>
 </head>
 <body>
+<div id="appWrap" style="display:none">
 <div class="wrap">
 <div class="hdr">
   <div class="hdr-row">
@@ -508,10 +509,23 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyCY0AmKBHDykEldcLVnFv8YSR_aWbpnsPs",authDomain:"saldo-real-1a966.firebaseapp.com",databaseURL:"https://saldo-real-1a966-default-rtdb.firebaseio.com",projectId:"saldo-real-1a966",storageBucket:"saldo-real-1a966.firebasestorage.app",messagingSenderId:"985544796226",appId:"1:985544796226:web:8c8cd9590ebb359fe6a5db"});
-var DB=firebase.database();
-var RF={saldo:DB.ref('saldo'),gastos:DB.ref('items'),ing:DB.ref('ingresos'),log:DB.ref('log'),prest:DB.ref('prestamos'),cred:DB.ref('creditos'),cuentas:DB.ref('cuentas')};
+var DB   = firebase.database();
+var AUTH = firebase.auth();
+var RF   = {}; // populated after login
+
+function initRF(uid) {
+  var base = 'users/' + uid;
+  RF.saldo   = DB.ref(base+'/saldo');
+  RF.gastos  = DB.ref(base+'/items');
+  RF.ing     = DB.ref(base+'/ingresos');
+  RF.log     = DB.ref(base+'/log');
+  RF.prest   = DB.ref(base+'/prestamos');
+  RF.cred    = DB.ref(base+'/creditos');
+  RF.cuentas = DB.ref(base+'/cuentas');
+}
 
 var EG=['📺','🎵','🎮','🏋️','📱','☁️','🛒','🍔','⛽','💊','📚','🏠','✈️','💈','🎬','🧴','🐾','💳','🔌','🍕','☕','🚗','💡','🌐'];
 var EI=['💸','🏦','💼','🛍️','📈','🤝','💰','🎁','🔑','⭐','🏷️','📦','🎯','🌟','💡','🧾','🏅','📊','💎','🌈','✨','🎉','🚀','🔥'];
@@ -762,17 +776,59 @@ function renderNotif(arr){
 }
 
 // FIREBASE
-ss('sy','Conectando…');
-RF.saldo.on('value',function(s){S.base=s.val()||0;ss('on','Sincronizado ✓');render();});
-RF.gastos.on('value',function(s){var r=s.val()||{};S.gastos={};Object.keys(r).forEach(function(k){S.gastos[k]=Object.assign({},r[k],{fbKey:k});});render();});
-RF.ing.on('value',function(s){var r=s.val()||{};S.ing={};Object.keys(r).forEach(function(k){S.ing[k]=Object.assign({},r[k],{fbKey:k});});render();});
-RF.log.on('value',function(s){S.logData=s.val()||{};renderLog();});
-RF.prest.on('value',function(s){var r=s.val()||{};S.prest={};Object.keys(r).forEach(function(k){S.prest[k]=Object.assign({},r[k],{fbKey:k});});render();});
-RF.cred.on('value',function(s){var r=s.val()||{};S.cred={};Object.keys(r).forEach(function(k){S.cred[k]=Object.assign({},r[k],{fbKey:k});});render();});
-RF.cuentas.on('value',function(s){var r=s.val()||{};S.cuentas={};Object.keys(r).forEach(function(k){S.cuentas[k]=Object.assign({},r[k],{fbKey:k});});renderAccts();});
+ss('sy','Esperando…');
 window.addEventListener('offline',function(){ss('off','Sin conexión');});
-setTimeout(reprogramarPC, 3000);
 window.addEventListener('online',function(){ss('sy','Reconectando…');});
+
+var _listeners=[];
+function detachAll(){_listeners.forEach(function(f){f();});_listeners=[];}
+function listenOn(ref,fn){ref.on('value',fn);_listeners.push(function(){ref.off('value',fn);});}
+
+function startListeners(){
+  listenOn(RF.saldo,   function(s){S.base=s.val()||0;ss('on','Sincronizado ✓');render();});
+  listenOn(RF.gastos,  function(s){var r=s.val()||{};S.gastos={};Object.keys(r).forEach(function(k){S.gastos[k]=Object.assign({},r[k],{fbKey:k});});render();});
+  listenOn(RF.ing,     function(s){var r=s.val()||{};S.ing={};Object.keys(r).forEach(function(k){S.ing[k]=Object.assign({},r[k],{fbKey:k});});render();});
+  listenOn(RF.log,     function(s){S.logData=s.val()||{};renderLog();});
+  listenOn(RF.prest,   function(s){var r=s.val()||{};S.prest={};Object.keys(r).forEach(function(k){S.prest[k]=Object.assign({},r[k],{fbKey:k});});render();});
+  listenOn(RF.cred,    function(s){var r=s.val()||{};S.cred={};Object.keys(r).forEach(function(k){S.cred[k]=Object.assign({},r[k],{fbKey:k});});render();});
+  listenOn(RF.cuentas, function(s){var r=s.val()||{};S.cuentas={};Object.keys(r).forEach(function(k){S.cuentas[k]=Object.assign({},r[k],{fbKey:k});});renderAccts();});
+}
+
+AUTH.onAuthStateChanged(function(user){
+  var ls=G('LoginScreen'),ub=G('UserBar'),aw=G('appWrap');
+  if(user){
+    ls.style.display='none';
+    ub.style.display='flex';
+    aw.style.display='block';
+    G('UserName').textContent=user.displayName||'Usuario';
+    G('UserEmail').textContent=user.email||'';
+    if(user.photoURL) G('UserAvatar').src=user.photoURL;
+    initRF(user.uid);
+    detachAll();
+    startListeners();
+    fetchTasa();
+    setTimeout(initAnims,300);
+  } else {
+    ls.style.display='flex';
+    ub.style.display='none';
+    aw.style.display='none';
+    detachAll();
+    S.base=0;S.gastos={};S.ing={};S.logData={};S.prest={};S.cred={};S.cuentas={};
+  }
+});
+
+G('BtnLoginGoogle').addEventListener('click',function(){
+  var provider=new firebase.auth.GoogleAuthProvider();
+  AUTH.signInWithPopup(provider).catch(function(err){
+    var e=G('LoginError');e.style.display='block';
+    e.textContent='Error al iniciar sesión. Intenta de nuevo.';
+  });
+});
+
+G('BtnLogout').addEventListener('click',function(){
+  if(!confirm('¿Cerrar sesión?'))return;
+  AUTH.signOut();
+});});
 
 // TABS
 function setTab(vid,btn){
@@ -1311,9 +1367,33 @@ function fetchTasa() {
         });
     });
 }
-fetchTasa();
 // Refresh every 6 hours while app is open
 setInterval(fetchTasa, 6 * 60 * 60 * 1000);
 </script>
+
+<!-- LOGIN SCREEN -->
+<div id="LoginScreen" style="display:none;position:fixed;inset:0;z-index:200;background:#080a0f;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+  <div style="text-align:center;max-width:340px;width:100%">
+    <div style="font-size:52px;margin-bottom:16px">💰</div>
+    <div style="font-size:28px;font-weight:800;background:linear-gradient(135deg,#e8ff00,#00ffb3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;filter:drop-shadow(0 0 8px rgba(232,255,0,.3))">Wallet GT</div>
+    <div style="font-size:13px;color:#7a7f99;margin-bottom:40px;font-weight:500">by FlamingJavi · Tu dinero bajo control</div>
+    <button id="BtnLoginGoogle" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;background:#fff;color:#111;border:none;border-radius:14px;padding:16px 20px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 0 24px rgba(232,255,0,.15),0 4px 20px rgba(0,0,0,.4);transition:transform .12s">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continuar con Google
+    </button>
+    <div id="LoginError" style="margin-top:16px;font-size:12px;color:#ff3a3a;display:none"></div>
+    <div style="margin-top:32px;font-size:11px;color:#3a3f55;line-height:1.6">Tus datos son privados y solo tú puedes verlos.<br>Cada usuario tiene su propio espacio seguro.</div>
+  </div>
+</div>
+
+<!-- USER BAR (shown when logged in) -->
+<div id="UserBar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(8,10,15,.95);backdrop-filter:blur(10px);border-top:1px solid #1e2235;padding:calc(8px) 16px calc(8px + env(safe-area-inset-bottom));align-items:center;gap:10px;max-width:430px;margin:0 auto">
+  <img id="UserAvatar" src="" style="width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(232,255,0,.3)" onerror="this.style.display='none'"/>
+  <div style="flex:1;min-width:0">
+    <div id="UserName" style="font-size:12px;font-weight:600;color:#f0f0f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+    <div id="UserEmail" style="font-size:10px;color:#7a7f99;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+  </div>
+  <button id="BtnLogout" style="background:rgba(255,58,58,.12);border:1px solid rgba(255,58,58,.25);color:#ff3a3a;border-radius:8px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer">Salir</button>
+</div>
 </body>
 </html>
