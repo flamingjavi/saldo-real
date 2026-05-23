@@ -275,11 +275,33 @@
     .credito-total.cobrar{color:var(--green)}
     .credito-fecha{font-size:10px;color:var(--sub);margin-top:2px}
     .orange-bg{background:var(--orange-bg);border-color:var(--orange-border)}
-  </style>
+  
+@keyframes goldPulse{0%,100%{box-shadow:0 0 20px rgba(212,175,55,.3)}50%{box-shadow:0 0 40px rgba(212,175,55,.6),0 0 80px rgba(212,175,55,.2)}}
+@keyframes crimsonPulse{0%,100%{box-shadow:0 0 15px rgba(204,0,0,.3)}50%{box-shadow:0 0 30px rgba(204,0,0,.6)}}
+@keyframes ripple{to{transform:scale(8);opacity:0}}
+.btn-n:active,.abtn-g:active{animation:goldPulse .4s ease}
+.it.ir{transition:box-shadow .3s}
+.press{transform:scale(.96)!important;filter:brightness(1.2)!important;transition:transform .08s,filter .08s!important}
+.press-soft{transform:scale(.98)!important;transition:transform .08s!important}
+.abtn,.btn-n,.btn-sv,.b-ok,.chip,.tab,.btn-not,.btn-ab,.btn-liq,.lfi,.ac,.tog{transition:transform .12s cubic-bezier(.34,1.56,.64,1),filter .12s,box-shadow .15s!important}
+.sec-t{color:var(--gold2);font-weight:800}
+.it-q.r{color:var(--crimson2)}.it-q.g{color:var(--gold)}
+.tot-v.r{color:var(--crimson2)}.tot-v.g{color:var(--gold)}
+.ls.r .ls-v{color:var(--crimson2)}.ls.g .ls-v{color:var(--gold)}.ls.o .ls-v{color:var(--org)}
+.ls.r .ls-l{color:var(--crimson2)}.ls.g .ls-l{color:var(--gold)}
+.lc-tot.lp{color:var(--crimson2)}.lc-tot.lr{color:var(--gold)}
+.pfill.g{background:linear-gradient(90deg,#d4af37,#f5d76e)}.pfill.r{background:linear-gradient(90deg,#cc0000,#ff2222)}
+.ab-v{color:var(--gold)}
+.log-a.pos{color:var(--gold)}.log-a.neg{color:var(--crimson2)}
+.rm-total{color:var(--gold2);text-shadow:0 0 10px rgba(212,175,55,.4)}
+.accts-row .ac.sel{border-color:var(--gold);background:rgba(212,175,55,.08);box-shadow:0 0 12px rgba(212,175,55,.25)}
+.hero-acct-bar .h-acct-v{color:var(--gold)}
+::selection{background:rgba(212,175,55,.25);color:var(--gold2)}
+</style>
 </head>
 <body>
 <!-- LOGIN -->
-<div id="LS" style="display:flex;position:fixed;inset:0;z-index:200;background:#080a0f;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+<div id="LS" style="display:flex;position:fixed;inset:0;z-index:200;background:radial-gradient(ellipse at center,#1a1200 0%,#0a0800 50%,#080000 100%);flex-direction:column;align-items:center;justify-content:center;padding:32px">
   <div style="text-align:center;max-width:320px;width:100%">
     <div style="font-size:48px;margin-bottom:12px">💰</div>
     <div style="font-size:24px;font-weight:800;color:#e8ff00;margin-bottom:4px">Wallet GT</div>
@@ -293,7 +315,7 @@
   </div>
 </div>
 <!-- USER BAR -->
-<div id="UBar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(8,10,15,.96);backdrop-filter:blur(10px);border-top:1px solid #1e2235;padding:8px 16px calc(8px + env(safe-area-inset-bottom));align-items:center;gap:10px">
+<div id="UBar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(10,8,0,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(212,175,55,.2);padding:8px 16px calc(8px + env(safe-area-inset-bottom));align-items:center;gap:10px">
   <img id="UAv" src="" style="width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(232,255,0,.3)" onerror="this.style.display='none'"/>
   <div style="flex:1;min-width:0"><div id="UNm" style="font-size:12px;font-weight:600;color:#f0f0f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><div id="UEm" style="font-size:10px;color:#7a7f99"></div></div>
   <button id="UOut" style="background:rgba(255,58,58,.1);border:1px solid rgba(255,58,58,.2);color:#ff3a3a;border-radius:7px;padding:5px 10px;font-family:Inter,sans-serif;font-size:11px;font-weight:600;cursor:pointer">Salir</button>
@@ -1015,6 +1037,52 @@ window.setCreditType=function(t){
 };
 
 fetchTasa();
+
+
+// ── TOUCH ANIMATIONS ────────────────────────────────────
+function addPressAnim(sel,cls){
+  document.querySelectorAll(sel).forEach(function(el){
+    el.addEventListener('touchstart',function(){this.classList.add(cls);},{passive:true});
+    el.addEventListener('touchend',function(){var s=this;setTimeout(function(){s.classList.remove(cls);},150);},{passive:true});
+    el.addEventListener('mousedown',function(){this.classList.add(cls);});
+    el.addEventListener('mouseup',function(){var s=this;setTimeout(function(){s.classList.remove(cls);},150);});
+  });
+}
+function addRipple(e){
+  var el=e.currentTarget,r=document.createElement('span'),rect=el.getBoundingClientRect();
+  var x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+  var y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+  r.style.cssText='position:absolute;border-radius:50%;background:rgba(212,175,55,.2);pointer-events:none;transform:scale(0);animation:ripple .5s linear;left:'+(x-20)+'px;top:'+(y-20)+'px;width:40px;height:40px;';
+  el.style.position='relative';el.style.overflow='hidden';el.appendChild(r);
+  setTimeout(function(){r.remove();},500);
+}
+function initAnims(){
+  addPressAnim('.abtn','press');addPressAnim('.btn-n','press');
+  addPressAnim('.btn-sv','press');addPressAnim('.b-ok','press');
+  addPressAnim('.chip','press');addPressAnim('.tab','press-soft');
+  addPressAnim('.btn-ab','press');addPressAnim('.btn-liq','press');
+  addPressAnim('.lfi','press-soft');addPressAnim('.ac','press-soft');
+  addPressAnim('.tog','press');addPressAnim('.b-cancel','press-soft');
+  ['BtnIngRap','BtnEditBase','BtnNGasto','BtnNIngreso','BtnNPrest','BtnNCred',
+   'BtnSvGasto','BtnSvIngreso','BtnSvPrest','BtnSvCred','BtnOkSaldo','BtnOkIng',
+   'BtnOkAbono','BtnOkCuenta'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.addEventListener('touchstart',addRipple,{passive:true});el.addEventListener('mousedown',addRipple);}
+  });
+}
+// Hero pulse on change
+var _lastHero='';
+function pulseHero(){
+  var el=document.getElementById('heroVal');if(!el)return;
+  var v=el.textContent;
+  if(v!==_lastHero&&_lastHero!==''){
+    el.style.transition='text-shadow .3s';
+    el.style.textShadow='0 0 40px rgba(212,175,55,1),0 0 80px rgba(212,175,55,.6)';
+    setTimeout(function(){el.style.textShadow='0 0 20px rgba(212,175,55,.7),0 0 60px rgba(212,175,55,.3)';},400);
+  }
+  _lastHero=v;
+}
+setTimeout(initAnims,200);
 
 // GOOGLE AUTH
 AUTH.onAuthStateChanged(user=>{
