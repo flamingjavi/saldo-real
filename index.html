@@ -818,21 +818,15 @@ function renderNotifConfig(arr){
   }).join('');
 }
 
-// FIREBASE LISTENERS
-rSaldo.on('value',s=>{base=s.val()||0;ss('online','Sincronizado ✓');render();});
-rGastos.on('value',s=>{const r=s.val()||{};gastos={};Object.entries(r).forEach(([k,v])=>{gastos[k]={...v,fbKey:k};});render();});
-rIngresos.on('value',s=>{const r=s.val()||{};ingresos={};Object.entries(r).forEach(([k,v])=>{ingresos[k]={...v,fbKey:k};});render();});
-rLog.on('value',s=>{logData=s.val()||{};renderLog();});
-rPrestamos.on('value',s=>{const r=s.val()||{};prestamos={};Object.entries(r).forEach(([k,v])=>{prestamos[k]={...v,fbKey:k};});render();});
-rCreditos.on('value',s=>{const r=s.val()||{};creditos={};Object.entries(r).forEach(([k,v])=>{creditos[k]={...v,fbKey:k};});render();});
+// Firebase listeners started after login via startListeners()
 
 // ACCIONES GASTOS
-window.toggleG=function(k,v){return db.ref('items/'+k+'/on').set(v);};
-window.delG=function(k,n,m){if(!confirm('¿Eliminar este gasto?'))return;log('remove','Gasto eliminado: '+n,-m);db.ref('items/'+k).remove();delete notifIds[k];localStorage.setItem('nids',JSON.stringify(notifIds));};
-window.cicloEG=function(k){const cur=(gastos[k]&&gastos[k].emoji)||EG[0];db.ref('items/'+k+'/emoji').set(EG[(EG.indexOf(cur)+1)%EG.length]);};
+window.toggleG=function(k,v){if(rGastos)rGastos.child(k+'/on').set(v);};
+window.delG=function(k,n,m){if(!confirm('¿Eliminar este gasto?'))return;log('remove','Gasto eliminado: '+n,-m);if(rGastos)rGastos.child(k).remove();delete notifIds[k];localStorage.setItem('nids',JSON.stringify(notifIds));};
+window.cicloEG=function(k){const cur=(gastos[k]&&gastos[k].emoji)||EG[0];if(rGastos)rGastos.child(k+'/emoji').set(EG[(EG.indexOf(cur)+1)%EG.length]);};
 
 // ACCIONES INGRESOS
-window.delI=function(k,n,m){if(!confirm('¿Eliminar este ingreso?'))return;log('ingreso','Ingreso eliminado: '+n,-m);db.ref('ingresos/'+k).remove();};
+window.delI=function(k,n,m){if(!confirm('¿Eliminar este ingreso?'))return;log('ingreso','Ingreso eliminado: '+n,-m);if(rIngresos)rIngresos.child(k).remove();};
 
 // ACCIONES PRÉSTAMOS
 window.abrirAbono=function(k,nombre,pend){abonarKey=k;document.getElementById('ovAbonarTitle').textContent='Abono — '+nombre;document.getElementById('ovAbonarDesc').textContent='Pendiente: '+fQ(pend);document.getElementById('inAbono').value='';document.getElementById('ovAbonar').classList.add('open');setTimeout(()=>document.getElementById('inAbono').focus(),100);};
