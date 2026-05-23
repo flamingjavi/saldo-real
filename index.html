@@ -571,7 +571,7 @@ const db=firebase.database();
 const AUTH=firebase.auth();
 let currentUID=null;
 function initRF(uid){currentUID=uid;var u='users/'+uid;rSaldo=db.ref(u+'/saldo');rGastos=db.ref(u+'/items');rIngresos=db.ref(u+'/ingresos');rLog=db.ref(u+'/log');rPrestamos=db.ref(u+'/prestamos');rCreditos=db.ref(u+'/creditos');rCuentas=db.ref(u+'/cuentas');}
-// refs set by initRF()
+let rSaldo,rGastos,rIngresos,rLog,rPrestamos,rCreditos,rCuentas; // set by initRF()
 
 // ESTADO
 const EG=['📺','🎵','🎮','🏋️','📱','☁️','🛒','🍔','⛽','💊','📚','🏠','✈️','💈','🎬','🧴','🐾','💳','🔌','🍕','☕','🚗','💡','🌐'];
