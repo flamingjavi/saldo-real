@@ -841,17 +841,7 @@ AUTH.onAuthStateChanged(function(user){
   }
 });
 G('LBtn').addEventListener('click',function(){
-  // Try popup first, fall back to redirect
-  var provider = new firebase.auth.GoogleAuthProvider();
-  AUTH.signInWithPopup(provider).catch(function(popupErr){
-    console.log('Popup failed, trying redirect:', popupErr.code);
-    // Popup blocked or failed — use redirect instead
-    AUTH.signInWithRedirect(provider).catch(function(err){
-      var e=G('LErr');e.style.display='block';
-      e.textContent='Error al iniciar sesión ('+err.code+'). Intenta de nuevo.';
-      console.error(err);
-    });
-  });
+  AUTH.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
 });
 G('UOut').addEventListener('click',function(){if(confirm('¿Cerrar sesión?'))AUTH.signOut();});
 
