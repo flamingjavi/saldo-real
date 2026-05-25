@@ -273,17 +273,49 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 <body>
 
 <!-- LOGIN -->
-<div id="LS">
-  <div style="text-align:center;max-width:320px;width:100%">
-    <div style="font-size:52px;margin-bottom:14px">💰</div>
-    <div style="font-size:28px;font-weight:800;background:linear-gradient(135deg,#d4af37,#ff2222);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;filter:drop-shadow(0 0 12px rgba(212,175,55,.5))">Wallet GT</div>
-    <div style="font-size:12px;color:#5a4a25;margin-bottom:36px;font-weight:600">by FlamingJavi</div>
-    <button id="LBtn" style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;color:#111;border:none;border-radius:13px;padding:15px 20px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 30px rgba(212,175,55,.2),0 4px 20px rgba(0,0,0,.5)">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      Continuar con Google
-    </button>
-    <div id="LErr" style="margin-top:12px;font-size:12px;color:#ff3a3a;display:none"></div>
-    <div style="margin-top:28px;font-size:10px;color:#2a2010;line-height:1.6">Cada usuario tiene su propio espacio privado y seguro.</div>
+<div id="LS" style="display:flex;position:fixed;inset:0;z-index:200;background:radial-gradient(ellipse at center,#1a1200 0%,#0a0800 50%,#080000 100%);flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto">
+  <div style="text-align:center;max-width:340px;width:100%">
+    <div style="font-size:48px;margin-bottom:10px">💰</div>
+    <div style="font-size:26px;font-weight:800;background:linear-gradient(135deg,#d4af37,#ff2222);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:2px">Wallet GT</div>
+    <div style="font-size:11px;color:#7a6a3a;margin-bottom:22px">by FlamingJavi</div>
+    <div style="display:flex;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:3px;margin-bottom:16px">
+      <button id="LTabLogin" onclick="switchAuthTab('login')" style="flex:1;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:7px;padding:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer">Iniciar sesión</button>
+      <button id="LTabReg" onclick="switchAuthTab('reg')" style="flex:1;background:none;color:rgba(212,175,55,.5);border:none;border-radius:7px;padding:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Registrarse</button>
+    </div>
+    <div id="LFormLogin">
+      <div style="margin-bottom:10px;text-align:left">
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Email</label>
+        <input id="LEmail" type="email" placeholder="tu@email.com" inputmode="email" autocomplete="email" style="width:100%;background:#110e06;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:11px 13px;color:#f0dfa0;font-family:Inter,sans-serif;font-size:14px;outline:none;-webkit-appearance:none"/>
+      </div>
+      <div style="margin-bottom:14px;text-align:left">
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Contraseña</label>
+        <input id="LPass" type="password" placeholder="••••••••" autocomplete="current-password" style="width:100%;background:#110e06;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:11px 13px;color:#f0dfa0;font-family:Inter,sans-serif;font-size:14px;outline:none;-webkit-appearance:none"/>
+      </div>
+      <button id="LBtnLogin" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:11px;padding:14px;font-family:Inter,sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 20px rgba(212,175,55,.3);margin-bottom:10px">Entrar</button>
+      <button id="LBtnForgot" style="background:none;border:none;color:rgba(212,175,55,.4);font-family:Inter,sans-serif;font-size:12px;cursor:pointer;text-decoration:underline">¿Olvidaste tu contraseña?</button>
+    </div>
+    <div id="LFormReg" style="display:none">
+      <div style="margin-bottom:10px;text-align:left">
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Nombre</label>
+        <input id="RNom" type="text" placeholder="Tu nombre" autocomplete="name" style="width:100%;background:#110e06;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:11px 13px;color:#f0dfa0;font-family:Inter,sans-serif;font-size:14px;outline:none;-webkit-appearance:none"/>
+      </div>
+      <div style="margin-bottom:10px;text-align:left">
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Email</label>
+        <input id="REmail" type="email" placeholder="tu@email.com" inputmode="email" autocomplete="email" style="width:100%;background:#110e06;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:11px 13px;color:#f0dfa0;font-family:Inter,sans-serif;font-size:14px;outline:none;-webkit-appearance:none"/>
+      </div>
+      <div style="margin-bottom:10px;text-align:left">
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Contraseña</label>
+        <input id="RPass" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" style="width:100%;background:#110e06;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:11px 13px;color:#f0dfa0;font-family:Inter,sans-serif;font-size:14px;outline:none;-webkit-appearance:none"/>
+      </div>
+      <div style="margin-bottom:14px;text-align:left">
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Confirmar contraseña</label>
+        <input id="RPass2" type="password" placeholder="Repite tu contraseña" autocomplete="new-password" style="width:100%;background:#110e06;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:11px 13px;color:#f0dfa0;font-family:Inter,sans-serif;font-size:14px;outline:none;-webkit-appearance:none"/>
+      </div>
+      <button id="LBtnReg" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:11px;padding:14px;font-family:Inter,sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 20px rgba(212,175,55,.3)">Crear cuenta</button>
+    </div>
+    <div id="LErr" style="margin-top:12px;font-size:12px;color:#ff6666;display:none;background:rgba(204,0,0,.1);border:1px solid rgba(204,0,0,.2);border-radius:8px;padding:8px 10px;text-align:left"></div>
+    <div id="LMsg" style="margin-top:12px;font-size:12px;color:rgba(212,175,55,.7);display:none;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.15);border-radius:8px;padding:8px 10px;text-align:left"></div>
+    <div style="margin-top:18px;font-size:10px;color:#2a2010;line-height:1.6">Datos privados · Cada usuario tiene su propio espacio seguro</div>
   </div>
 </div>
 
@@ -908,6 +940,80 @@ document.getElementById('LEmail').addEventListener('keydown', function(e){
 document.getElementById('RPass2').addEventListener('keydown', function(e){
   if(e.key === 'Enter') document.getElementById('LBtnReg').click();
 });
+
+// ── EMAIL AUTH ───────────────────────────────────────────
+function switchAuthTab(tab){
+  var il=tab==='login';
+  document.getElementById('LFormLogin').style.display=il?'block':'none';
+  document.getElementById('LFormReg').style.display=il?'none':'block';
+  var tl=document.getElementById('LTabLogin'),tr=document.getElementById('LTabReg');
+  tl.style.background=il?'linear-gradient(135deg,#d4af37,#b8860b)':'none';
+  tl.style.color=il?'#0a0800':'rgba(212,175,55,.5)';
+  tr.style.background=il?'none':'linear-gradient(135deg,#d4af37,#b8860b)';
+  tr.style.color=il?'rgba(212,175,55,.5)':'#0a0800';
+  document.getElementById('LErr').style.display='none';
+  document.getElementById('LMsg').style.display='none';
+}
+function showErr(m){var e=document.getElementById('LErr');e.textContent=m;e.style.display='block';}
+function showMsg(m){var e=document.getElementById('LMsg');e.textContent=m;e.style.display='block';}
+function setBtn(id,loading){
+  var b=document.getElementById(id);if(!b)return;
+  b.style.opacity=loading?'0.6':'1';
+  b.style.pointerEvents=loading?'none':'auto';
+  if(loading)b.textContent='⏳ Cargando...';
+  else b.textContent=id==='LBtnLogin'?'Entrar':'Crear cuenta';
+}
+var ERRS={
+  'auth/user-not-found':'No existe cuenta con ese email.',
+  'auth/wrong-password':'Contraseña incorrecta.',
+  'auth/invalid-credential':'Email o contraseña incorrectos.',
+  'auth/invalid-email':'Email inválido.',
+  'auth/too-many-requests':'Demasiados intentos. Espera un momento.',
+  'auth/email-already-in-use':'Ya existe una cuenta con ese email.',
+  'auth/weak-password':'Contraseña muy débil. Usa mínimo 6 caracteres.'
+};
+document.getElementById('LBtnLogin').addEventListener('click',function(){
+  var email=document.getElementById('LEmail').value.trim();
+  var pass=document.getElementById('LPass').value;
+  if(!email||!pass){showErr('Ingresa tu email y contraseña.');return;}
+  document.getElementById('LErr').style.display='none';
+  setBtn('LBtnLogin',true);
+  AUTH.signInWithEmailAndPassword(email,pass).catch(function(err){
+    setBtn('LBtnLogin',false);
+    showErr(ERRS[err.code]||'Error: '+err.message);
+  });
+});
+document.getElementById('LBtnReg').addEventListener('click',function(){
+  var nom=document.getElementById('RNom').value.trim();
+  var email=document.getElementById('REmail').value.trim();
+  var pass=document.getElementById('RPass').value;
+  var pass2=document.getElementById('RPass2').value;
+  if(!nom){showErr('Ingresa tu nombre.');return;}
+  if(!email){showErr('Ingresa tu email.');return;}
+  if(pass.length<6){showErr('Contraseña mínimo 6 caracteres.');return;}
+  if(pass!==pass2){showErr('Las contraseñas no coinciden.');return;}
+  document.getElementById('LErr').style.display='none';
+  setBtn('LBtnReg',true);
+  AUTH.createUserWithEmailAndPassword(email,pass).then(function(cred){
+    return cred.user.updateProfile({displayName:nom});
+  }).then(function(){
+    var uid=AUTH.currentUser.uid;
+    DB.ref('usuarios/'+uid).set({nombre:nom,email:email,creado:Date.now(),plan:'free',activo:true});
+  }).catch(function(err){
+    setBtn('LBtnReg',false);
+    showErr(ERRS[err.code]||'Error: '+err.message);
+  });
+});
+document.getElementById('LBtnForgot').addEventListener('click',function(){
+  var email=document.getElementById('LEmail').value.trim();
+  if(!email){showErr('Ingresa tu email primero.');return;}
+  AUTH.sendPasswordResetEmail(email).then(function(){
+    showMsg('✅ Revisa tu email para restablecer tu contraseña.');
+  }).catch(function(err){showErr('Error: '+err.message);});
+});
+document.getElementById('LPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LBtnLogin').click();});
+document.getElementById('LEmail').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LPass').focus();});
+document.getElementById('RPass2').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LBtnReg').click();});
 
 AUTH.onAuthStateChanged(function(user){
   if(user){
