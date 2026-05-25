@@ -813,13 +813,100 @@ function startListeners(){
 }
 
 // ── AUTH ──────────────────────────────────────────────────
-// Handle redirect result
-AUTH.getRedirectResult().catch(function(err){
-  if(err && err.code && err.code !== 'auth/no-auth-event'){
-    console.error('getRedirectResult error:', err);
-    var e=G('LErr');
-    if(e){e.style.display='block';e.textContent='Error al iniciar sesión. Intenta de nuevo.';}
-  }
+// ── EMAIL/PASSWORD AUTH ─────────────────────────────────
+function switchAuthTab(tab){
+  var isLogin = tab === 'login';
+  document.getElementById('LFormLogin').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('LFormReg').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('LTabLogin').style.background = isLogin ? 'linear-gradient(135deg,#d4af37,#b8860b)' : 'none';
+  document.getElementById('LTabLogin').style.color = isLogin ? '#0a0800' : 'rgba(212,175,55,.5)';
+  document.getElementById('LTabReg').style.background = isLogin ? 'none' : 'linear-gradient(135deg,#d4af37,#b8860b)';
+  document.getElementById('LTabReg').style.color = isLogin ? 'rgba(212,175,55,.5)' : '#0a0800';
+  document.getElementById('LErr').style.display = 'none';
+  document.getElementById('LMsg').style.display = 'none';
+}
+
+function showLErr(msg){ var e=document.getElementById('LErr'); e.textContent=msg; e.style.display='block'; }
+function showLMsg(msg){ var e=document.getElementById('LMsg'); e.textContent=msg; e.style.display='block'; }
+function hideLErr(){ document.getElementById('LErr').style.display='none'; document.getElementById('LMsg').style.display='none'; }
+
+function setLoading(btnId, loading){
+  var btn = document.getElementById(btnId);
+  if(!btn) return;
+  btn.style.opacity = loading ? '0.6' : '1';
+  btn.style.pointerEvents = loading ? 'none' : 'auto';
+  if(loading) btn.textContent = '⏳ Cargando...';
+}
+
+document.getElementById('LBtnLogin').addEventListener('click', function(){
+  var email = document.getElementById('LEmail').value.trim();
+  var pass = document.getElementById('LPass').value;
+  if(!email || !pass){ showLErr('Ingresa tu email y contraseña.'); return; }
+  hideLErr(); setLoading('LBtnLogin', true);
+  AUTH.signInWithEmailAndPassword(email, pass)
+    .catch(function(err){
+      setLoading('LBtnLogin', false);
+      var msgs = {
+        'auth/user-not-found': 'No existe una cuenta con ese email.',
+        'auth/wrong-password': 'Contraseña incorrecta.',
+        'auth/invalid-email': 'Email inválido.',
+        'auth/too-many-requests': 'Demasiados intentos. Espera un momento.',
+        'auth/invalid-credential': 'Email o contraseña incorrectos.'
+      };
+      showLErr(msgs[err.code] || 'Error: ' + err.message);
+    });
+});
+
+document.getElementById('LBtnReg').addEventListener('click', function(){
+  var nom = document.getElementById('RNom').value.trim();
+  var email = document.getElementById('REmail').value.trim();
+  var pass = document.getElementById('RPass').value;
+  var pass2 = document.getElementById('RPass2').value;
+  if(!nom){ showLErr('Ingresa tu nombre.'); return; }
+  if(!email){ showLErr('Ingresa tu email.'); return; }
+  if(pass.length < 6){ showLErr('La contraseña debe tener al menos 6 caracteres.'); return; }
+  if(pass !== pass2){ showLErr('Las contraseñas no coinciden.'); return; }
+  hideLErr(); setLoading('LBtnReg', true);
+  AUTH.createUserWithEmailAndPassword(email, pass)
+    .then(function(cred){
+      return cred.user.updateProfile({displayName: nom});
+    })
+    .then(function(){
+      // Save user to DB for admin panel
+      var uid = AUTH.currentUser.uid;
+      DB.ref('usuarios/'+uid).set({
+        nombre: nom, email: email,
+        creado: Date.now(), plan: 'free', activo: true
+      });
+    })
+    .catch(function(err){
+      setLoading('LBtnReg', false);
+      var msgs = {
+        'auth/email-already-in-use': 'Ya existe una cuenta con ese email.',
+        'auth/invalid-email': 'Email inválido.',
+        'auth/weak-password': 'Contraseña muy débil. Usa al menos 6 caracteres.'
+      };
+      showLErr(msgs[err.code] || 'Error: ' + err.message);
+    });
+});
+
+document.getElementById('LBtnForgot').addEventListener('click', function(){
+  var email = document.getElementById('LEmail').value.trim();
+  if(!email){ showLErr('Ingresa tu email primero.'); return; }
+  AUTH.sendPasswordResetEmail(email)
+    .then(function(){ showLMsg('✅ Te enviamos un link para restablecer tu contraseña.'); })
+    .catch(function(err){ showLErr('Error: ' + err.message); });
+});
+
+// Enter key support
+document.getElementById('LPass').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('LBtnLogin').click();
+});
+document.getElementById('LEmail').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('LPass').focus();
+});
+document.getElementById('RPass2').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('LBtnReg').click();
 });
 
 AUTH.onAuthStateChanged(function(user){
@@ -827,9 +914,15 @@ AUTH.onAuthStateChanged(function(user){
     G('LS').style.display='none';
     G('UBar').style.display='flex';
     G('AW').style.display='block';
-    G('UNm').textContent=user.displayName||'Usuario';
+    G('UNm').textContent=user.displayName||user.email.split('@')[0]||'Usuario';
     G('UEm').textContent=user.email||'';
     if(user.photoURL)G('UAv').src=user.photoURL;
+    else G('UAv').style.display='none';
+    // Save login to DB
+    DB.ref('usuarios/'+user.uid).update({ultimoLogin: Date.now(), email: user.email, nombre: user.displayName||user.email.split('@')[0]});
+    // Reset loading state
+    var lb=document.getElementById('LBtnLogin');
+    if(lb){lb.style.opacity='1';lb.style.pointerEvents='auto';lb.textContent='Entrar';}
     initRF(user.uid);detachAll();startListeners();fetchTasa();
     setTimeout(initAnims,300);
   } else {
@@ -840,9 +933,7 @@ AUTH.onAuthStateChanged(function(user){
     S.base=0;S.gastos={};S.ing={};S.logData={};S.prest={};S.cred={};S.cuentas={};
   }
 });
-G('LBtn').addEventListener('click',function(){
-  AUTH.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-});
+// Login handled by email/password above
 G('UOut').addEventListener('click',function(){if(confirm('¿Cerrar sesión?'))AUTH.signOut();});
 
 // ── TABS ─────────────────────────────────────────────────
