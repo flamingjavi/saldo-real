@@ -635,6 +635,22 @@ firebase.initializeApp({
 });
 var DB=firebase.database(), AUTH=firebase.auth();
 var RF={};
+// Tab switcher - must be global and at top for onclick= in HTML
+window.switchAuthTab=function(tab){
+  var il=tab==='login';
+  var fl=document.getElementById('LFormLogin');
+  var fr=document.getElementById('LFormReg');
+  var tl=document.getElementById('LTabLogin');
+  var tr=document.getElementById('LTabReg');
+  var er=document.getElementById('LErr');
+  var mg=document.getElementById('LMsg');
+  if(fl)fl.style.display=il?'block':'none';
+  if(fr)fr.style.display=il?'none':'block';
+  if(tl){tl.style.background=il?'linear-gradient(135deg,#d4af37,#b8860b)':'none';tl.style.color=il?'#0a0800':'rgba(212,175,55,.5)';}
+  if(tr){tr.style.background=il?'none':'linear-gradient(135deg,#d4af37,#b8860b)';tr.style.color=il?'rgba(212,175,55,.5)':'#0a0800';}
+  if(er)er.style.display='none';
+  if(mg)mg.style.display='none';
+};
 function initRF(uid){
   var u='users/'+uid;
   RF.saldo=DB.ref(u+'/saldo'); RF.gastos=DB.ref(u+'/items');
