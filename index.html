@@ -367,6 +367,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
   <button class="tab" id="TabI">Ingresos</button>
   <button class="tab" id="TabP">Préstamos</button>
   <button class="tab" id="TabH">Historial</button>
+  <button class="tab" id="TabT">💼 Trabajo</button>
   <button class="tab" id="TabA">🔔<span id="alertBadge" style="display:none;background:var(--red);color:#fff;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px;vertical-align:middle;margin-left:2px">!</span></button>
 </div>
 
@@ -422,6 +423,37 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
   </div>
   <div id="LLog"></div>
   <div style="display:flex;justify-content:center;margin-top:11px"><button class="lfi" id="BtnClearLog">Limpiar historial</button></div>
+</div>
+
+<div class="view" id="VT">
+  <!-- CONFIG SUELDO -->
+  <div class="rm-card" style="margin-top:13px">
+    <div class="rm-header"><span class="rm-title">⚙️ Configuración de sueldo</span></div>
+    <div class="fr">
+      <div class="fld"><label>Pago por hora</label><input type="number" id="TPayH" placeholder="0.00" inputmode="decimal" style="background:#0a0800;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:10px;color:var(--ink);font-family:Inter,sans-serif;font-size:14px;outline:none;width:100%;-webkit-appearance:none"/></div>
+      <div class="fld"><label>Moneda</label>
+        <div class="ctog" style="margin-bottom:0">
+          <button class="cb on" id="TcQ">🇬🇹 Q</button>
+          <button class="cb" id="TcU">🇺🇸 $</button>
+        </div>
+      </div>
+    </div>
+    <button id="BtnSvSueldo" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:9px;padding:10px;font-family:Inter,sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px;box-shadow:0 0 12px rgba(212,175,55,.3)">💾 Guardar configuración</button>
+    <div id="TSueldoInfo" style="font-size:11px;color:var(--sub);margin-top:8px;text-align:center"></div>
+  </div>
+
+  <!-- BOTONES PRINCIPALES -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+    <button id="BtnDiaTrab" style="background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:11px;padding:14px 10px;font-family:Inter,sans-serif;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 0 15px rgba(212,175,55,.35)">☀️ Día trabajado<br><span style="font-size:10px;font-weight:600;opacity:.7">(8 horas auto)</span></button>
+    <button id="BtnHorasMan" style="background:var(--card);border:1.5px solid rgba(212,175,55,.25);color:var(--gold2);border-radius:11px;padding:14px 10px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer">⏱️ Horas manuales<br><span style="font-size:10px;font-weight:600;opacity:.7">Personalizado</span></button>
+  </div>
+  <button id="BtnHorasExtra" style="width:100%;background:var(--redbg);border:1.5px solid rgba(204,0,0,.25);color:#ff8888;border-radius:11px;padding:11px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px">🔥 Horas extras</button>
+
+  <!-- RESUMEN POR MES -->
+  <div class="sec" style="margin-top:4px"><span class="sec-t">📅 Registro por mes</span></div>
+  <div id="TResumen"></div>
+  <div class="sec" style="margin-top:10px"><span class="sec-t">📋 Días registrados</span></div>
+  <div id="TLista"></div>
 </div>
 
 <div class="view" id="VA">
@@ -1052,6 +1084,7 @@ G('TabG').addEventListener('click',function(){setTab('VG',this);});
 G('TabI').addEventListener('click',function(){setTab('VI',this);});
 G('TabP').addEventListener('click',function(){setTab('VP',this);});
 G('TabH').addEventListener('click',function(){setTab('VH',this);});
+G('TabT').addEventListener('click',function(){setTab('VT',this);renderTrabajo();});
 G('TabA').addEventListener('click',function(){setTab('VA',this);});
 
 // ── INGRESO RÁPIDO ────────────────────────────────────────
@@ -1273,6 +1306,30 @@ document.addEventListener('click',function(e){
     });return;
   }
   if(a==='pcnoff'){delete nidsPC[k];localStorage.setItem('nidsPC',JSON.stringify(nidsPC));render();return;}
+  if(a==='tpag'){
+    var mes=el.dataset.mes,monto=parseFloat(el.dataset.monto),uid2=AUTH.currentUser?AUTH.currentUser.uid:null;
+    if(!uid2)return;
+    if(!confirm('¿Marcar Q'+monto.toFixed(2)+' como pagado y agregarlo a tu saldo?'))return;
+    DB.ref('users/'+uid2+'/trabajo').once('value',function(snap){
+      var data=snap.val()||{};
+      Object.keys(data).forEach(function(k){
+        if(data[k].mes===mes&&!data[k].pagado){
+          DB.ref('users/'+uid2+'/trabajo/'+k+'/pagado').set(true);
+        }
+      });
+      // Add to balance
+      RF.saldo.once('value',function(s){RF.saldo.set((s.val()||0)+monto);});
+      addLog('ingreso','💼 Sueldo pagado '+mes+': +Q'+monto.toFixed(2),monto);
+      setTimeout(renderTrabajo,500);
+    });
+    return;
+  }
+  if(a==='tdel'){
+    var uid3=AUTH.currentUser?AUTH.currentUser.uid:null; if(!uid3)return;
+    if(!confirm('¿Eliminar este registro?'))return;
+    DB.ref('users/'+uid3+'/trabajo/'+k).remove();
+    setTimeout(renderTrabajo,300);return;
+  }
 });
 
 // ── TASA BANGUAT ──────────────────────────────────────────
