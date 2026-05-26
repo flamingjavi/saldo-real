@@ -78,7 +78,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 .al-x{background:none;border:none;color:var(--red);opacity:.5;cursor:pointer;font-size:13px;padding:0}
 
 /* TABS */
-.tabs{display:flex;margin:12px 0 0;border-bottom:2px solid rgba(212,175,55,.15)}
+.tabs{display:flex;margin:12px 0 0;border-bottom:2px solid rgba(212,175,55,.15);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0}
 .tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 2px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--sub);cursor:pointer;transition:color .2s}
 .tab.on{color:var(--gold2);border-bottom-color:var(--gold);text-shadow:0 0 10px rgba(212,175,55,.5)}
 .view{display:none}.view.on{display:block}
@@ -426,35 +426,56 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 </div>
 
 <div class="view" id="VT">
-  <!-- CONFIG SUELDO -->
-  <div class="rm-card" style="margin-top:13px">
-    <div class="rm-header"><span class="rm-title">⚙️ Configuración de sueldo</span></div>
-    <div class="fr">
-      <div class="fld"><label>Pago por hora</label><input type="number" id="TPayH" placeholder="0.00" inputmode="decimal" style="background:#0a0800;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:10px;color:var(--ink);font-family:Inter,sans-serif;font-size:14px;outline:none;width:100%;-webkit-appearance:none"/></div>
-      <div class="fld"><label>Moneda</label>
-        <div class="ctog" style="margin-bottom:0">
-          <button class="cb on" id="TcQ">🇬🇹 Q</button>
-          <button class="cb" id="TcU">🇺🇸 $</button>
+  <div style="height:13px"></div>
+
+  <!-- CONFIG -->
+  <div style="background:var(--card);border:1px solid rgba(212,175,55,.15);border-radius:14px;padding:16px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <span style="font-size:18px">⚙️</span>
+      <span style="font-size:14px;font-weight:800;color:var(--gold2)">Configuración de sueldo</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div>
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:5px">Pago por hora</label>
+        <input type="number" id="TPayH" placeholder="0.00" inputmode="decimal" style="width:100%;background:#0a0800;border:1.5px solid rgba(212,175,55,.2);border-radius:9px;padding:10px;color:var(--ink);font-family:Inter,sans-serif;font-size:16px;font-weight:600;outline:none;-webkit-appearance:none"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:5px">Moneda</label>
+        <div style="display:flex;background:#0a0800;border:1.5px solid rgba(212,175,55,.18);border-radius:9px;padding:3px">
+          <button id="TcQ" style="flex:1;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:6px;padding:8px 4px;font-family:Inter,sans-serif;font-size:12px;font-weight:700;cursor:pointer">🇬🇹 Q</button>
+          <button id="TcU" style="flex:1;background:none;color:rgba(212,175,55,.5);border:none;border-radius:6px;padding:8px 4px;font-family:Inter,sans-serif;font-size:12px;font-weight:600;cursor:pointer">🇺🇸 $</button>
         </div>
       </div>
     </div>
-    <button id="BtnSvSueldo" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:9px;padding:10px;font-family:Inter,sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px;box-shadow:0 0 12px rgba(212,175,55,.3)">💾 Guardar configuración</button>
-    <div id="TSueldoInfo" style="font-size:11px;color:var(--sub);margin-top:8px;text-align:center"></div>
+    <button id="BtnSvSueldo" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:9px;padding:11px;font-family:Inter,sans-serif;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 0 12px rgba(212,175,55,.25)">💾 Guardar configuración</button>
+    <div id="TSueldoInfo" style="font-size:12px;color:var(--sub);margin-top:9px;text-align:center;line-height:1.5"></div>
   </div>
 
-  <!-- BOTONES PRINCIPALES -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
-    <button id="BtnDiaTrab" style="background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:11px;padding:14px 10px;font-family:Inter,sans-serif;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 0 15px rgba(212,175,55,.35)">☀️ Día trabajado<br><span style="font-size:10px;font-weight:600;opacity:.7">(8 horas auto)</span></button>
-    <button id="BtnHorasMan" style="background:var(--card);border:1.5px solid rgba(212,175,55,.25);color:var(--gold2);border-radius:11px;padding:14px 10px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer">⏱️ Horas manuales<br><span style="font-size:10px;font-weight:600;opacity:.7">Personalizado</span></button>
+  <!-- BOTONES REGISTRO -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+    <button id="BtnDiaTrab" style="background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:13px;padding:16px 10px;font-family:Inter,sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 16px rgba(212,175,55,.35);line-height:1.4;text-align:center">
+      ☀️ Día trabajado<br><span style="font-size:10px;font-weight:600;opacity:.75">8 horas automático</span>
+    </button>
+    <button id="BtnHorasMan" style="background:var(--card);border:1.5px solid rgba(212,175,55,.25);color:var(--gold2);border-radius:13px;padding:16px 10px;font-family:Inter,sans-serif;font-size:14px;font-weight:700;cursor:pointer;line-height:1.4;text-align:center">
+      ⏱️ Horas manuales<br><span style="font-size:10px;font-weight:600;opacity:.65">Personalizado</span>
+    </button>
   </div>
-  <button id="BtnHorasExtra" style="width:100%;background:var(--redbg);border:1.5px solid rgba(204,0,0,.25);color:#ff8888;border-radius:11px;padding:11px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px">🔥 Horas extras</button>
+  <button id="BtnHorasExtra" style="width:100%;background:var(--redbg);border:1.5px solid rgba(204,0,0,.3);color:#ff8888;border-radius:13px;padding:13px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:16px">
+    🔥 Horas extras &nbsp;·&nbsp; <span style="font-size:11px;opacity:.7">Monto manual</span>
+  </button>
 
-  <!-- RESUMEN POR MES -->
-  <div class="sec" style="margin-top:4px"><span class="sec-t">📅 Registro por mes</span></div>
+  <!-- RESUMEN Y LISTA -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+    <span style="font-size:14px;font-weight:800;color:var(--gold2)">📅 Registro por mes</span>
+  </div>
   <div id="TResumen"></div>
-  <div class="sec" style="margin-top:10px"><span class="sec-t">📋 Días registrados</span></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:14px 0 9px">
+    <span style="font-size:14px;font-weight:800;color:var(--gold2)">📋 Días registrados</span>
+  </div>
   <div id="TLista"></div>
+  <div style="height:20px"></div>
 </div>
+
 
 <div class="view" id="VA">
   <div class="sec" style="margin-top:13px"><span class="sec-t">Avisos</span></div>
@@ -722,673 +743,125 @@ function lCard(k,icoC,ico,nom,obj,tlbl,tc,monto,fecha,nota,pct,ab,pend,cu,abA,li
   h+='<div class="lc-det">Pendiente: <strong>'+fQ(pend)+'</strong>'+(cu?' · '+cu:'')+'</div></div>';
   if(abA.length)h+='<div class="ab-list">'+abA.slice(-3).map(function(a){return '<div class="ab-it"><span class="ab-v">+'+fQ(a.monto)+'</span><span class="ab-f">'+fH(a.ts)+'</span></div>';}).join('')+'</div>';
   if(!liq){
-    h+='<div class="lc-acts"><button class="btn-ab" data-a="ab" data-t="'+tipo+'" data-k="'+k+'" data-nom="'+nom.replace(/"/g,'')+'" data-pend="'+pend+'">＋ Abonar</button>';
-    h+='<button class="btn-liq" data-a="liq" data-t="'+tipo+'" data-k="'+k+'" data-pend="'+pend+'">✓ Liquidar</button>';
-    h+='<button class="btn-dl" data-a="dl" data-t="'+tipo+'" data-k="'+k+'">🗑️</button></div>';
-    if(dia){
-      var hasN=nidsPC[k];
-      h+='<div style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(212,175,55,.08);display:flex;align-items:center;justify-content:space-between">';
-      h+='<span style="font-size:11px;color:var(--sub)">🔔 Aviso día '+dia+'</span>';
-      if(hasN)h+='<button class="btn-not off" style="font-size:11px;padding:4px 10px" data-a="pcnoff" data-k="'+k+'">Apagar</button>';
-      else h+='<button class="btn-not" style="font-size:11px;padding:4px 10px" data-a="pcnon" data-t="'+tipo+'" data-k="'+k+'">Activar</button>';
-      h+='</div>';
-    }
-  } else {
-    h+='<div class="lc-acts"><button class="btn-dl" style="flex:1" data-a="dl" data-t="'+tipo+'" data-k="'+k+'">🗑️ Eliminar</button></div>';
-  }
-  return h+'</div>';
+    h+='<div class="lc-acts"><button class="btn-ab" data-a="ab" data-t="'+tipo+'" data-k="'+k+'" data-nom="'+nom.replace(/"/g,'')+'" data-pend="'+pend+'">＋ Abonar</button>';     h+='<button class="btn-liq" data-a="liq" data-t="'+tipo+'" data-k="'+k+'" data-pend="'+pend+'">✓ Liquidar</button>';     h+='<button class="btn-dl" data-a="dl" data-t="'+tipo+'" data-k="'+k+'">🗑️</button></div>';     if(dia){       var hasN=nidsPC[k];       h+='<div style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(212,175,55,.08);display:flex;align-items:center;justify-content:space-between">';       h+='<span style="font-size:11px;color:var(--sub)">🔔 Aviso día '+dia+'</span>';       if(hasN)h+='<button class="btn-not off" style="font-size:11px;padding:4px 10px" data-a="pcnoff" data-k="'+k+'">Apagar</button>';       else h+='<button class="btn-not" style="font-size:11px;padding:4px 10px" data-a="pcnon" data-t="'+tipo+'" data-k="'+k+'">Activar</button>';       h+='</div>';     }   } else {     h+='<div class="lc-acts"><button class="btn-dl" style="flex:1" data-a="dl" data-t="'+tipo+'" data-k="'+k+'">🗑️ Eliminar</button></div>';   }   return h+'</div>'; }  function renderP(arr){   var tP=0,tR=0,h='';   arr.forEach(function(p){     var ab=sumAb(p),pend=Math.max(p.monto-ab,0),pct=Math.min(ab/p.monto*100,100);     if(!p.liquidado&&p.tipo==='p')tP+=pend;     if(!p.liquidado&&p.tipo==='r')tR+=pend;     var cu=p.cuotas?'Cuota: '+fQ(p.cuotaVal||cuotaReal(p))+' ×'+p.cuotas:'';     h+=lCard(p.fbKey,p.tipo==='p'?'lp':'lr',p.tipo==='p'?'💸':'🤝',p.nombre,'',p.tipo==='p'?'Yo presté':'Me prestaron',p.tipo==='p'?'lp':'lr',p.monto,p.fecha,p.nota,pct,ab,pend,cu,p.abonos?Object.values(p.abonos):[],p.liquidado,'p',p.dia||null);   });   G('LP').innerHTML=h||'<div class="empty">Sin préstamos.</div>';   G('LsP').textContent=fQ(tP);G('LsPs').textContent=arr.filter(function(p){return !p.liquidado&&p.tipo==='p';}).length+' activo(s)';   G('LsR').textContent=fQ(tR);G('LsRs').textContent=arr.filter(function(p){return !p.liquidado&&p.tipo==='r';}).length+' activo(s)'; }  function renderC(arr){   var tD=0,tC=0,h='';   arr.forEach(function(c){     var ab=sumAb(c),pend=Math.max(c.monto-ab,0),pct=Math.min(ab/c.monto*100,100);     if(!c.liquidado&&c.tipo==='d')tD+=pend;     if(!c.liquidado&&c.tipo==='y')tC+=pend;     var cu=c.cuotas?'Cuota: '+fQ(c.cuotaVal||cuotaReal(c))+' ×'+c.cuotas:'';     h+=lCard(c.fbKey,c.tipo==='d'?'ld':'ly',c.tipo==='d'?'🛍️':'💳',c.nombre,c.objeto||'',c.tipo==='d'?'Alguien me compró':'Yo compré',c.tipo==='d'?'ld':'ly',c.monto,c.fecha,c.nota,pct,ab,pend,cu,c.abonos?Object.values(c.abonos):[],c.liquidado,'c',c.dia||null);   });   G('LC').innerHTML=h||'<div class="empty">Sin compras a crédito.</div>';   G('CsD').textContent=fQ(tD);G('CsDs').textContent=arr.filter(function(c){return !c.liquidado&&c.tipo==='d';}).length+' pendiente(s)';   G('CsC').textContent=fQ(tC);G('CsCs').textContent=arr.filter(function(c){return !c.liquidado&&c.tipo==='y';}).length+' pendiente(s)'; }  function renderAccts(){   var arr=Object.values(S.cuentas),h='';   h+='<div class="ac'+(S.acctKey===null?' sel':'')+'" data-a="sa" data-k="__gen__"><div class="ac-ico">🏠</div><div class="ac-nom">General</div><div class="ac-bal">'+fQ(S.base)+'</div></div>';   arr.forEach(function(a){     h+='<div class="ac'+(S.acctKey===a.fbKey?' sel':'')+'" data-a="sa" data-k="'+a.fbKey+'"><div class="ac-ico">'+a.emoji+'</div><div class="ac-nom">'+a.nombre+'</div><div class="ac-bal">'+fQ(a.saldo)+'</div><button class="ac-del" data-a="da" data-k="'+a.fbKey+'">✕</button></div>';   });   h+='<div class="ac-add" data-a="na"><div class="ac-plus">＋</div><div class="ac-lbl">Nueva</div></div>';   G('acctRow').innerHTML=h;   G('acctNm').textContent=S.acctKey&&S.cuentas[S.acctKey]?S.cuentas[S.acctKey].nombre:'General'; }  function renderLog(){   var el=G('LLog');   var arr=Object.values(S.logData).sort(function(a,b){return b.ts-a.ts;});   var f=S.logF==='todo'?arr:arr.filter(function(e){return e.tipo===S.logF;});   if(!f.length){el.innerHTML='<div class="empty">Sin registros.</div>';return;}   var ic={saldo:'💵',add:'🔴',remove:'⬜',ingreso:'🟡',prestamo:'🟠',daily:'📊'};   el.innerHTML=f.map(function(e){     return '<div class="log-e"><div class="log-ico '+e.tipo+'">'+(ic[e.tipo]||'•')+'</div><div class="log-b"><div class="log-d">'+e.desc+'</div><div class="log-t">'+fH(e.ts)+'</div></div>'+(e.amt!==null?'<div class="log-a '+(e.amt>=0?'pos':'neg')+'">'+(e.amt>=0?'+':'-')+fQ(e.amt)+'</div>':'')+'</div>';   }).join(''); }  function renderAlerts(arr){   var al=[];   arr.filter(function(i){return i.on&&i.dia;}).forEach(function(i){var d=dC(i.dia);if(d===0||d===1)al.push({lbl:(d===0?'🚨 ¡Hoy se cobra':'⏰ Mañana se cobra')+' <strong>'+i.nombre+'</strong> — '+fQ(i.montoQ)});});   Object.values(S.prest).filter(function(p){return !p.liquidado&&p.dia;}).forEach(function(p){var d=dC(p.dia);if(d===0)al.push({lbl:'🚨 ¡Hoy vence cuota de <strong>'+p.nombre+'</strong>'});else if(d===1)al.push({lbl:'⏰ Mañana vence cuota de <strong>'+p.nombre+'</strong>'});});   Object.values(S.cred).filter(function(c){return !c.liquidado&&c.dia;}).forEach(function(c){var d=dC(c.dia);if(d===0)al.push({lbl:'🚨 ¡Hoy vence cuota de <strong>'+(c.objeto||c.nombre)+'</strong>'});else if(d===1)al.push({lbl:'⏰ Mañana vence cuota de <strong>'+(c.objeto||c.nombre)+'</strong>'});});   var badge=G('alertBadge');   ['alertBox','alertBox2'].forEach(function(id){     var b=G(id);if(!b)return;     if(!al.length){b.className='alerts';return;}     b.className='alerts on';     b.innerHTML=al.map(function(x){return '<div class="al-it"><span>'+x.lbl+'</span><button class="al-x">✕</button></div>';}).join('');   });   if(badge)badge.style.display=al.length?'inline':'none'; }  function renderNotif(arr){   var el=G('LNot');   var m=arr.filter(function(i){return i.freq==='Mensual'&&i.dia;});   if(!m.length){el.innerHTML='<div class="empty" style="margin-top:10px">Agrega un gasto Mensual con día de cobro.</div>';return;}   el.innerHTML=m.map(function(item){     var on=!!nids[item.fbKey],d=dC(item.dia);     return '<div class="nc"><div class="nc-row"><div style="font-size:19px">'+item.emoji+'</div><div style="flex:1"><div class="nc-name">'+item.nombre+' — '+fQ(item.montoQ)+'</div><div class="nc-sub">Día '+item.dia+' · en '+d+'d</div></div>'+(on?'<button class="btn-not off" data-a="noff" data-k="'+item.fbKey+'">Apagar</button>':'<button class="btn-not" data-a="non" data-k="'+item.fbKey+'">Activar 🔔</button>')+'</div></div>';   }).join(''); }  var customPres=parseFloat(localStorage.getItem('customPres'))||0; function renderResumen(){   var el=G('ResumenM');if(!el)return;   var gF=Object.values(S.gastos).filter(function(g){return g.on&&g.freq==='Mensual';});   var pA=Object.values(S.prest).filter(function(p){return !p.liquidado;});   var cA=Object.values(S.cred).filter(function(c){return !c.liquidado;});   var tG=gF.reduce(function(s,g){return s+g.montoQ;},0);   var tP=pA.reduce(function(s,p){return s+cuotaReal(p);},0);   var tC=cA.reduce(function(s,c){return s+cuotaReal(c);},0);   var total=tG+tP+tC;   var overpaid=parseFloat(localStorage.getItem('overpaidAmt'))||0;   var ovMonth=localStorage.getItem('overpaidMonth')||'';   var mesAct=new Date().toISOString().slice(0,7);   if(ovMonth!==mesAct)overpaid=0;   var totalAj=Math.max(total-overpaid,0);   if(!gF.length&&!pA.length&&!cA.length){el.innerHTML='<div class="empty">Agrega gastos mensuales, préstamos o créditos con cuotas.</div>';return;}   var h='<div class="rm-card"><div class="rm-header"><span class="rm-title">Total a pagar este mes</span><span class="rm-total">'+fQ(total)+'</span></div>';   if(gF.length){h+='<div class="rm-section-lbl">Gastos y suscripciones</div>';gF.forEach(function(g){h+='<div class="rm-row"><span class="rm-row-lbl">'+g.emoji+' '+g.nombre+(g.dia?' · día '+g.dia:'')+'</span><span class="rm-row-amt r">'+fQ(g.montoQ)+'</span></div>';});}   if(pA.length){h+='<div class="rm-section-lbl">Cuotas préstamos</div>';pA.forEach(function(p){var cq=cuotaReal(p),cnt=p.abonos?Object.values(p.abonos).length:0;h+='<div class="rm-row"><span class="rm-row-lbl">🤝 '+p.nombre+(p.dia?' · día '+p.dia:'')+(p.cuotas?' ('+cnt+'/'+p.cuotas+')':'')+'</span><span class="rm-row-amt o">'+fQ(cq)+'</span></div>';});}   if(cA.length){h+='<div class="rm-section-lbl">Cuotas créditos</div>';cA.forEach(function(c){var cq=cuotaReal(c),cnt=c.abonos?Object.values(c.abonos).length:0;h+='<div class="rm-row"><span class="rm-row-lbl">🛍️ '+(c.objeto||c.nombre)+(c.dia?' · día '+c.dia:'')+(c.cuotas?' ('+cnt+'/'+c.cuotas+')':'')+'</span><span class="rm-row-amt o">'+fQ(cq)+'</span></div>';});}   if(overpaid>0)h+='<div class="rm-overpaid">✅ Pagaste de más el mes pasado: <strong>'+fQ(overpaid)+'</strong><br>Este mes solo pagas: <strong>'+fQ(totalAj)+'</strong></div>';   var saldoTras=S.base-total;   h+='<div class="rm-saldo-disp"><span class="rm-saldo-lbl">Saldo tras pagar todo</span><span class="rm-saldo-val '+(saldoTras>=0?'pos':'neg')+'">'+(saldoTras<0?'−':'')+fQ(saldoTras)+'</span></div>';   h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,175,55,.08)"><div style="font-size:11px;color:var(--sub);font-weight:600;margin-bottom:6px">💰 Presupuesto mensual personalizado</div>';   h+='<div class="rm-custom"><input type="number" id="RmPres" placeholder="Ej: 2000.00" value="'+(customPres||'')+'" inputmode="decimal"/><button id="RmPresBtn">Guardar</button></div>';   if(customPres>0){var disp=customPres-total;h+='<div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:var(--sub)">Presupuesto restante</span><span style="font-size:14px;font-weight:700;color:'+(disp>=0?'var(--gold)':'var(--red)')+'">'+(disp<0?'−':'')+fQ(disp)+'</span></div>';}   h+='</div>';   h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(212,175,55,.08)"><div style="font-size:11px;color:var(--sub);font-weight:600;margin-bottom:6px">📝 Registrar pago del mes</div>';   h+='<div class="rm-custom"><input type="number" id="RmPago" placeholder="¿Cuánto pagaste?" inputmode="decimal"/><button id="RmPagoBtn">Registrar</button></div></div></div>';   el.innerHTML=h;   var pb=G('RmPresBtn');   if(pb)pb.addEventListener('click',function(){var v=parseFloat(G('RmPres').value)||0;customPres=v;localStorage.setItem('customPres',v);renderResumen();});   var pgb=G('RmPagoBtn');   if(pgb)pgb.addEventListener('click',function(){     var v=parseFloat(G('RmPago').value);if(!v||v<=0)return;     var diff=v-total;     var nextM=new Date();nextM.setMonth(nextM.getMonth()+1);     if(diff>0){localStorage.setItem('overpaidAmt',diff);localStorage.setItem('overpaidMonth',nextM.toISOString().slice(0,7));alert('✅ Pagaste Q'+diff.toFixed(2)+' de más — se descontará del próximo mes.');}     else if(diff<0)alert('⚠️ Pagaste Q'+Math.abs(diff).toFixed(2)+' menos de lo esperado.');     else alert('✅ Pago exacto registrado.');     addLog('saldo','Pago mensual: '+fQ(v)+' (esperado: '+fQ(total)+')',v);     renderResumen();   }); }  // ── FIREBASE LISTENERS ──────────────────────────────────── ss('sy','Esperando…'); window.addEventListener('offline',function(){ss('off','Sin conexión');}); window.addEventListener('online',function(){ss('sy','Reconectando…');}); var _L=[]; function detachAll(){_L.forEach(function(f){f();});_L=[];} function listenOn(r,fn){r.on('value',fn);_L.push(function(){r.off('value',fn);});} function startListeners(){   listenOn(RF.saldo,function(s){S.base=s.val()||0;ss('on','Sincronizado ✓');render();});   listenOn(RF.gastos,function(s){var r=s.val()||{};S.gastos={};Object.keys(r).forEach(function(k){S.gastos[k]=Object.assign({},r[k],{fbKey:k});});render();});   listenOn(RF.ing,function(s){var r=s.val()||{};S.ing={};Object.keys(r).forEach(function(k){S.ing[k]=Object.assign({},r[k],{fbKey:k});});render();});   listenOn(RF.log,function(s){S.logData=s.val()||{};renderLog();});   listenOn(RF.prest,function(s){var r=s.val()||{};S.prest={};Object.keys(r).forEach(function(k){S.prest[k]=Object.assign({},r[k],{fbKey:k});});render();});   listenOn(RF.cred,function(s){var r=s.val()||{};S.cred={};Object.keys(r).forEach(function(k){S.cred[k]=Object.assign({},r[k],{fbKey:k});});render();});   listenOn(RF.cuentas,function(s){var r=s.val()||{};S.cuentas={};Object.keys(r).forEach(function(k){S.cuentas[k]=Object.assign({},r[k],{fbKey:k});});renderAccts();}); }  // ── AUTH ────────────────────────────────────────────────── // ── EMAIL/PASSWORD AUTH ───────────────────────────────── function switchAuthTab(tab){   var isLogin = tab === 'login';   document.getElementById('LFormLogin').style.display = isLogin ? 'block' : 'none';   document.getElementById('LFormReg').style.display = isLogin ? 'none' : 'block';   document.getElementById('LTabLogin').style.background = isLogin ? 'linear-gradient(135deg,#d4af37,#b8860b)' : 'none';   document.getElementById('LTabLogin').style.color = isLogin ? '#0a0800' : 'rgba(212,175,55,.5)';   document.getElementById('LTabReg').style.background = isLogin ? 'none' : 'linear-gradient(135deg,#d4af37,#b8860b)';   document.getElementById('LTabReg').style.color = isLogin ? 'rgba(212,175,55,.5)' : '#0a0800';   document.getElementById('LErr').style.display = 'none';   document.getElementById('LMsg').style.display = 'none'; }  function showLErr(msg){ var e=document.getElementById('LErr'); e.textContent=msg; e.style.display='block'; } function showLMsg(msg){ var e=document.getElementById('LMsg'); e.textContent=msg; e.style.display='block'; } function hideLErr(){ document.getElementById('LErr').style.display='none'; document.getElementById('LMsg').style.display='none'; }  function setLoading(btnId, loading){   var btn = document.getElementById(btnId);   if(!btn) return;   btn.style.opacity = loading ? '0.6' : '1';   btn.style.pointerEvents = loading ? 'none' : 'auto';   if(loading) btn.textContent = '⏳ Cargando...'; }  document.getElementById('LBtnLogin').addEventListener('click', function(){   var email = document.getElementById('LEmail').value.trim();   var pass = document.getElementById('LPass').value;   if(!email || !pass){ showLErr('Ingresa tu email y contraseña.'); return; }   hideLErr(); setLoading('LBtnLogin', true);   AUTH.signInWithEmailAndPassword(email, pass)     .catch(function(err){       setLoading('LBtnLogin', false);       var msgs = {         'auth/user-not-found': 'No existe una cuenta con ese email.',         'auth/wrong-password': 'Contraseña incorrecta.',         'auth/invalid-email': 'Email inválido.',         'auth/too-many-requests': 'Demasiados intentos. Espera un momento.',         'auth/invalid-credential': 'Email o contraseña incorrectos.'       };       showLErr(msgs[err.code] || 'Error: ' + err.message);     }); });  document.getElementById('LBtnReg').addEventListener('click', function(){   var nom = document.getElementById('RNom').value.trim();   var email = document.getElementById('REmail').value.trim();   var pass = document.getElementById('RPass').value;   var pass2 = document.getElementById('RPass2').value;   if(!nom){ showLErr('Ingresa tu nombre.'); return; }   if(!email){ showLErr('Ingresa tu email.'); return; }   if(pass.length < 6){ showLErr('La contraseña debe tener al menos 6 caracteres.'); return; }   if(pass !== pass2){ showLErr('Las contraseñas no coinciden.'); return; }   hideLErr(); setLoading('LBtnReg', true);   AUTH.createUserWithEmailAndPassword(email, pass)     .then(function(cred){       return cred.user.updateProfile({displayName: nom});     })     .then(function(){       // Save user to DB for admin panel       var uid = AUTH.currentUser.uid;       DB.ref('usuarios/'+uid).set({         nombre: nom, email: email,         creado: Date.now(), plan: 'free', activo: true       });     })     .catch(function(err){       setLoading('LBtnReg', false);       var msgs = {         'auth/email-already-in-use': 'Ya existe una cuenta con ese email.',         'auth/invalid-email': 'Email inválido.',         'auth/weak-password': 'Contraseña muy débil. Usa al menos 6 caracteres.'       };       showLErr(msgs[err.code] || 'Error: ' + err.message);     }); });  document.getElementById('LBtnForgot').addEventListener('click', function(){   var email = document.getElementById('LEmail').value.trim();   if(!email){ showLErr('Ingresa tu email primero.'); return; }   AUTH.sendPasswordResetEmail(email)     .then(function(){ showLMsg('✅ Te enviamos un link para restablecer tu contraseña.'); })     .catch(function(err){ showLErr('Error: ' + err.message); }); });  // Enter key support document.getElementById('LPass').addEventListener('keydown', function(e){   if(e.key === 'Enter') document.getElementById('LBtnLogin').click(); }); document.getElementById('LEmail').addEventListener('keydown', function(e){   if(e.key === 'Enter') document.getElementById('LPass').focus(); }); document.getElementById('RPass2').addEventListener('keydown', function(e){   if(e.key === 'Enter') document.getElementById('LBtnReg').click(); });  // ── EMAIL AUTH ─────────────────────────────────────────── function switchAuthTab(tab){   var il=tab==='login';   document.getElementById('LFormLogin').style.display=il?'block':'none';   document.getElementById('LFormReg').style.display=il?'none':'block';   var tl=document.getElementById('LTabLogin'),tr=document.getElementById('LTabReg');   tl.style.background=il?'linear-gradient(135deg,#d4af37,#b8860b)':'none';   tl.style.color=il?'#0a0800':'rgba(212,175,55,.5)';   tr.style.background=il?'none':'linear-gradient(135deg,#d4af37,#b8860b)';   tr.style.color=il?'rgba(212,175,55,.5)':'#0a0800';   document.getElementById('LErr').style.display='none';   document.getElementById('LMsg').style.display='none'; } function showErr(m){var e=document.getElementById('LErr');e.textContent=m;e.style.display='block';} function showMsg(m){var e=document.getElementById('LMsg');e.textContent=m;e.style.display='block';} function setBtn(id,loading){   var b=document.getElementById(id);if(!b)return;   b.style.opacity=loading?'0.6':'1';   b.style.pointerEvents=loading?'none':'auto';   if(loading)b.textContent='⏳ Cargando...';   else b.textContent=id==='LBtnLogin'?'Entrar':'Crear cuenta'; } var ERRS={   'auth/user-not-found':'No existe cuenta con ese email.',   'auth/wrong-password':'Contraseña incorrecta.',   'auth/invalid-credential':'Email o contraseña incorrectos.',   'auth/invalid-email':'Email inválido.',   'auth/too-many-requests':'Demasiados intentos. Espera un momento.',   'auth/email-already-in-use':'Ya existe una cuenta con ese email.',   'auth/weak-password':'Contraseña muy débil. Usa mínimo 6 caracteres.' }; document.getElementById('LBtnLogin').addEventListener('click',function(){   var email=document.getElementById('LEmail').value.trim();   var pass=document.getElementById('LPass').value;   if(!email||!pass){showErr('Ingresa tu email y contraseña.');return;}   document.getElementById('LErr').style.display='none';   setBtn('LBtnLogin',true);   AUTH.signInWithEmailAndPassword(email,pass).catch(function(err){     setBtn('LBtnLogin',false);     showErr(ERRS[err.code]||'Error: '+err.message);   }); }); document.getElementById('LBtnReg').addEventListener('click',function(){   var nom=document.getElementById('RNom').value.trim();   var email=document.getElementById('REmail').value.trim();   var pass=document.getElementById('RPass').value;   var pass2=document.getElementById('RPass2').value;   if(!nom){showErr('Ingresa tu nombre.');return;}   if(!email){showErr('Ingresa tu email.');return;}   if(pass.length<6){showErr('Contraseña mínimo 6 caracteres.');return;}   if(pass!==pass2){showErr('Las contraseñas no coinciden.');return;}   document.getElementById('LErr').style.display='none';   setBtn('LBtnReg',true);   AUTH.createUserWithEmailAndPassword(email,pass).then(function(cred){     return cred.user.updateProfile({displayName:nom});   }).then(function(){     var uid=AUTH.currentUser.uid;     DB.ref('usuarios/'+uid).set({nombre:nom,email:email,creado:Date.now(),plan:'free',activo:true});   }).catch(function(err){     setBtn('LBtnReg',false);     showErr(ERRS[err.code]||'Error: '+err.message);   }); }); document.getElementById('LBtnForgot').addEventListener('click',function(){   var email=document.getElementById('LEmail').value.trim();   if(!email){showErr('Ingresa tu email primero.');return;}   AUTH.sendPasswordResetEmail(email).then(function(){     showMsg('✅ Revisa tu email para restablecer tu contraseña.');   }).catch(function(err){showErr('Error: '+err.message);}); }); document.getElementById('LPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LBtnLogin').click();}); document.getElementById('LEmail').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LPass').focus();}); document.getElementById('RPass2').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LBtnReg').click();});  AUTH.onAuthStateChanged(function(user){   if(user){     G('LS').style.display='none';     G('UBar').style.display='flex';     G('AW').style.display='block';     G('UNm').textContent=user.displayName||user.email.split('@')[0]||'Usuario';     G('UEm').textContent=user.email||'';     if(user.photoURL)G('UAv').src=user.photoURL;     else G('UAv').style.display='none';     // Save login to DB     DB.ref('usuarios/'+user.uid).update({ultimoLogin: Date.now(), email: user.email, nombre: user.displayName||user.email.split('@')[0]});     // Reset loading state     var lb=document.getElementById('LBtnLogin');     if(lb){lb.style.opacity='1';lb.style.pointerEvents='auto';lb.textContent='Entrar';}     initRF(user.uid);detachAll();startListeners();fetchTasa();     setTimeout(initAnims,300);   } else {     G('LS').style.display='flex';     G('UBar').style.display='none';     G('AW').style.display='none';     detachAll();     S.base=0;S.gastos={};S.ing={};S.logData={};S.prest={};S.cred={};S.cuentas={};   } }); // Login handled by email/password above G('UOut').addEventListener('click',function(){if(confirm('¿Cerrar sesión?'))AUTH.signOut();});  // ── TABS ───────────────────────────────────────────────── function setTab(vid,btn){   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});   G(vid).classList.add('on');btn.classList.add('on'); } G('TabG').addEventListener('click',function(){setTab('VG',this);}); G('TabI').addEventListener('click',function(){setTab('VI',this);}); G('TabP').addEventListener('click',function(){setTab('VP',this);}); G('TabH').addEventListener('click',function(){setTab('VH',this);}); G('TabT').addEventListener('click',function(){setTab('VT',this);renderTrabajo();}); G('TabA').addEventListener('click',function(){setTab('VA',this);});  // ── INGRESO RÁPIDO ──────────────────────────────────────── G('BtnIngRap').addEventListener('click',function(){G('InIng').value='';G('OvIngD').textContent='Monto en Quetzales';openOv('OvIng');setTimeout(function(){G('InIng').focus();},100);}); G('BtnCIng').addEventListener('click',function(){closeOv('OvIng');}); G('OvIng').addEventListener('click',function(e){if(e.target===this)closeOv('OvIng');}); G('BtnOkIng').addEventListener('click',function(){   var v=parseFloat(G('InIng').value);if(!v||v<=0)return;   RF.ing.push({emoji:'💰',nombre:'Ingreso rápido',tipo:'Transferencia',monto:v,sumar:'si',ts:Date.now()});   addLog('ingreso','Ingreso rápido: +'+fQ(v),v);closeOv('OvIng'); }); G('QChips').addEventListener('click',function(e){   var ch=e.target.closest('.chip');if(!ch)return;   if(ch.id==='ChipOtro'){G('InIng').value='';openOv('OvIng');setTimeout(function(){G('InIng').focus();},100);return;}   var m=parseFloat(ch.dataset.q);G('InIng').value=m;G('OvIngD').textContent='Monto: '+fQ(m);openOv('OvIng'); });  // ── SALDO BASE / CUENTA ─────────────────────────────────── G('BtnEditBase').addEventListener('click',function(){   if(S.acctKey&&S.cuentas[S.acctKey]){     var a=S.cuentas[S.acctKey];S.editAcctKey=S.acctKey;     G('OvCuentaT').textContent='Editar: '+a.nombre;     G('InCNom').value=a.nombre;G('InCBal').value=a.saldo;S.acctEmo=a.emoji;     document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae===a.emoji);});     openOv('OvCuenta');   } else {     G('InSaldo').value=S.base||'';openOv('OvSaldo');setTimeout(function(){G('InSaldo').focus();},100);   } }); G('OvSaldo').addEventListener('click',function(e){if(e.target===this)closeOv('OvSaldo');}); G('BtnCSaldo').addEventListener('click',function(){closeOv('OvSaldo');}); G('BtnOkSaldo').addEventListener('click',function(){   var v=parseFloat(G('InSaldo').value);   if(!isNaN(v)&&v>=0){addLog('saldo','Saldo base: '+fQ(v),v);RF.saldo.set(v);}   closeOv('OvSaldo'); });  // ── ABONO ───────────────────────────────────────────────── G('OvAbono').addEventListener('click',function(e){if(e.target===this){closeOv('OvAbono');S.abonoKey=null;S.abonoTipo=null;}}); G('BtnCAbono').addEventListener('click',function(){closeOv('OvAbono');S.abonoKey=null;S.abonoTipo=null;}); G('BtnAbonoSug').addEventListener('click',function(){   var obj=S.abonoTipo==='p'?S.prest[S.abonoKey]:S.cred[S.abonoKey];if(!obj)return;   var ab=sumAb(obj),pend=Math.max(obj.monto-ab,0),sug=cuotaReal(obj);   G('InAbono').value=Math.min(sug,pend).toFixed(2);G('InAbono').focus();G('InAbono').select(); }); G('BtnAbonoTodo').addEventListener('click',function(){   var obj=S.abonoTipo==='p'?S.prest[S.abonoKey]:S.cred[S.abonoKey];if(!obj)return;   var pend=Math.max(obj.monto-sumAb(obj),0);G('InAbono').value=pend.toFixed(2);G('InAbono').focus();G('InAbono').select(); }); G('BtnOkAbono').addEventListener('click',function(){   var v=parseFloat(G('InAbono').value);if(!v||v<=0)return;   if(S.abonoTipo==='p'){var p=S.prest[S.abonoKey];DB.ref('users/'+AUTH.currentUser.uid+'/prestamos/'+S.abonoKey+'/abonos').push({monto:v,ts:Date.now()});addLog('prestamo','Abono '+p.nombre+': +'+fQ(v),v);}   else{var c=S.cred[S.abonoKey];DB.ref('users/'+AUTH.currentUser.uid+'/creditos/'+S.abonoKey+'/abonos').push({monto:v,ts:Date.now()});addLog('prestamo','Cuota '+(c.objeto||c.nombre)+': +'+fQ(v),v);}   S.abonoKey=null;S.abonoTipo=null;closeOv('OvAbono'); });  // ── CUENTAS ─────────────────────────────────────────────── G('AeRow').addEventListener('click',function(e){var ae=e.target.closest('[data-ae]');if(!ae)return;S.acctEmo=ae.dataset.ae;document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae===S.acctEmo);});}); G('OvCuenta').addEventListener('click',function(e){if(e.target===this){closeOv('OvCuenta');S.editAcctKey=null;}}); G('BtnCCuenta').addEventListener('click',function(){closeOv('OvCuenta');S.editAcctKey=null;}); G('BtnOkCuenta').addEventListener('click',function(){   var nom=G('InCNom').value.trim(),bal=parseFloat(G('InCBal').value)||0;if(!nom)return;   if(S.editAcctKey){RF.cuentas.child(S.editAcctKey).update({emoji:S.acctEmo,nombre:nom,saldo:bal});addLog('saldo','Cuenta actualizada: '+nom,bal);S.editAcctKey=null;}   else{RF.cuentas.push({emoji:S.acctEmo,nombre:nom,saldo:bal});addLog('saldo','Cuenta creada: '+S.acctEmo+' '+nom,bal);}   closeOv('OvCuenta'); });  // ── MODAL GASTO ─────────────────────────────────────────── function buildEG(id,arr,sel,tipo){var h='';arr.forEach(function(e){h+='<div class="ep'+(e===sel?' on':'')+'" data-em="'+tipo+'" data-ev="'+e+'">'+e+'</div>';});G(id).innerHTML=h;} G('BtnNG').addEventListener('click',function(){   buildEG('EgG',EG,S.eG,'g');['GNom','GMon','GDia'].forEach(function(id){G(id).value='';});   G('GFrq').value='Mensual';S.moneda='GTQ';G('CbQ').classList.add('on');G('CbU').classList.remove('on');   G('GMonLbl').textContent='Monto (Q)';G('GPrev').textContent='';G('GDiaW').style.display='block';   openOv('ModG');setTimeout(function(){G('GNom').focus();},150); }); G('ModG').addEventListener('click',function(e){if(e.target===this)closeOv('ModG');}); G('CbQ').addEventListener('click',function(){S.moneda='GTQ';G('CbQ').classList.add('on');G('CbU').classList.remove('on');G('GMonLbl').textContent='Monto (Q)';updPrev();}); G('CbU').addEventListener('click',function(){S.moneda='USD';G('CbU').classList.add('on');G('CbQ').classList.remove('on');G('GMonLbl').textContent='Monto ($)';updPrev();}); G('GMon').addEventListener('input',updPrev); function updPrev(){var v=parseFloat(G('GMon').value),el=G('GPrev');if(!v||isNaN(v)){el.textContent='';return;}el.textContent=S.moneda==='USD'?'= Q'+(v*S.tasa).toFixed(2)+' (tasa actual Q'+S.tasa.toFixed(4)+'  Banguat)':'= $'+(v/S.tasa).toFixed(2)+' USD';} G('GFrq').addEventListener('change',function(){G('GDiaW').style.display=this.value==='Mensual'?'block':'none';}); G('BtnSvG').addEventListener('click',function(){   var nom=G('GNom').value.trim(),monRaw=parseFloat(G('GMon').value),frq=G('GFrq').value,dia=parseInt(G('GDia').value)||null;   if(!nom||!monRaw||monRaw<=0)return;   var mQ=S.moneda==='USD'?parseFloat((monRaw*S.tasa).toFixed(2)):monRaw;   var mU=S.moneda==='USD'?monRaw:parseFloat((monRaw/S.tasa).toFixed(2));   var tasaUsada=S.moneda==='USD'?S.tasa:null;   RF.gastos.push({emoji:S.eG,nombre:nom,montoQ:mQ,montoUSD:mU,moneda:S.moneda,tasaUsada:tasaUsada,freq:frq,dia:dia,on:true});   var desc='Gasto: '+S.eG+' '+nom+' ('+fQ(mQ)+')';   if(S.moneda==='USD')desc+=' · $'+monRaw.toFixed(2)+' @ Q'+S.tasa.toFixed(4);   addLog('add',desc,mQ);closeOv('ModG'); });  // ── MODAL INGRESO ───────────────────────────────────────── G('BtnNI').addEventListener('click',function(){buildEG('EgI',EI,S.eI,'i');G('INom').value='';G('IMon').value='';openOv('ModI');setTimeout(function(){G('INom').focus();},150);}); G('ModI').addEventListener('click',function(e){if(e.target===this)closeOv('ModI');}); G('BtnSvI').addEventListener('click',function(){   var nom=G('INom').value.trim(),mon=parseFloat(G('IMon').value),tip=G('ITip').value,sum=G('ISum').value;   if(!nom||!mon||mon<=0)return;   RF.ing.push({emoji:S.eI,nombre:nom,tipo:tip,monto:mon,sumar:sum,ts:Date.now()});   addLog('ingreso',tip+': '+S.eI+' '+nom+' (+'+fQ(mon)+')',mon);closeOv('ModI'); });  // ── MODAL PRÉSTAMO ──────────────────────────────────────── G('BtnNP').addEventListener('click',function(){   ['PNom','PMon','PCuo','PCuoV','PDia','PNot'].forEach(function(id){G(id).value='';});   G('PFec').value=new Date().toISOString().split('T')[0];   S.loanT='p';G('TtP').className='tt onr';G('TtR').className='tt';   openOv('ModP');setTimeout(function(){G('PNom').focus();},150); }); G('ModP').addEventListener('click',function(e){if(e.target===this)closeOv('ModP');}); G('TtP').addEventListener('click',function(){S.loanT='p';G('TtP').className='tt onr';G('TtR').className='tt';}); G('TtR').addEventListener('click',function(){S.loanT='r';G('TtR').className='tt ong';G('TtP').className='tt';}); G('BtnSvP').addEventListener('click',function(){   var nom=G('PNom').value.trim(),mon=parseFloat(G('PMon').value),fec=G('PFec').value;   var cuo=parseInt(G('PCuo').value)||null,cuoV=parseFloat(G('PCuoV').value)||null;   var dia=parseInt(G('PDia').value)||null,not=G('PNot').value.trim();   if(!nom||!mon||mon<=0)return;   RF.prest.push({tipo:S.loanT,nombre:nom,monto:mon,fecha:fec||null,cuotas:cuo,cuotaVal:cuoV,dia:dia,nota:not,liquidado:false});   addLog('prestamo',(S.loanT==='p'?'Presté a ':'Me prestaron: ')+nom+' '+fQ(mon),S.loanT==='p'?-mon:mon);closeOv('ModP'); });  // ── MODAL CRÉDITO ───────────────────────────────────────── G('BtnNC').addEventListener('click',function(){   ['CNom','CObj','CMon','CCuo','CCuoV','CDia','CNot'].forEach(function(id){G(id).value='';});   G('CFec').value=new Date().toISOString().split('T')[0];   S.creditT='d';G('TcD').className='tt ono';G('TcY').className='tt';   openOv('ModC');setTimeout(function(){G('CNom').focus();},150); }); G('ModC').addEventListener('click',function(e){if(e.target===this)closeOv('ModC');}); G('TcD').addEventListener('click',function(){S.creditT='d';G('TcD').className='tt ono';G('TcY').className='tt';}); G('TcY').addEventListener('click',function(){S.creditT='y';G('TcY').className='tt onb';G('TcD').className='tt';}); G('BtnSvC').addEventListener('click',function(){   var nom=G('CNom').value.trim(),obj=G('CObj').value.trim(),mon=parseFloat(G('CMon').value),fec=G('CFec').value;   var cuo=parseInt(G('CCuo').value)||null,cuoV=parseFloat(G('CCuoV').value)||null;   var dia=parseInt(G('CDia').value)||null,not=G('CNot').value.trim();   if(!nom||!obj||!mon||mon<=0)return;   RF.cred.push({tipo:S.creditT,nombre:nom,objeto:obj,monto:mon,fecha:fec||null,cuotas:cuo,cuotaVal:cuoV,dia:dia,nota:not,liquidado:false});   if(S.creditT==='y')addLog('add','Compré a crédito: '+obj+' — '+nom,mon);   else addLog('prestamo','Compra recibida: '+obj+' de '+nom,0);   closeOv('ModC'); });  // ── DELEGACIÓN DINÁMICA ─────────────────────────────────── document.addEventListener('click',function(e){   var t=e.target;   if(t.classList.contains('al-x')){t.closest('.al-it').remove();return;}   if(t.dataset.lf){S.logF=t.dataset.lf;document.querySelectorAll('.lfi').forEach(function(b){b.classList.remove('on');});t.classList.add('on');renderLog();return;}   if(t.id==='BtnClearLog'){if(!confirm('¿Limpiar historial?'))return;RF.log.set(null);return;}   if(t.dataset.em){if(t.dataset.em==='g'){S.eG=t.dataset.ev;buildEG('EgG',EG,S.eG,'g');}else{S.eI=t.dataset.ev;buildEG('EgI',EI,S.eI,'i');}return;}   var el=t;while(el&&el!==document.body&&!el.dataset.a)el=el.parentElement;   if(!el||!el.dataset.a)return;   var a=el.dataset.a,k=el.dataset.k,uid=AUTH.currentUser?AUTH.currentUser.uid:null;   if(!uid&&a!=='sa'&&a!=='na')return;   if(a==='tg'){RF.gastos.child(k+'/on').set(el.dataset.v==='1');return;}   if(a==='cg'){var cur=(S.gastos[k]&&S.gastos[k].emoji)||EG[0];RF.gastos.child(k+'/emoji').set(EG[(EG.indexOf(cur)+1)%EG.length]);return;}   if(a==='dg'){if(!confirm('¿Eliminar este gasto?'))return;addLog('remove','Gasto eliminado',-parseFloat(el.dataset.m));RF.gastos.child(k).remove();delete nids[k];localStorage.setItem('nids',JSON.stringify(nids));return;}   if(a==='di'){if(!confirm('¿Eliminar este ingreso?'))return;addLog('ingreso','Ingreso eliminado',-parseFloat(el.dataset.m));RF.ing.child(k).remove();return;}   if(a==='ab'){     S.abonoKey=k;S.abonoTipo=el.dataset.t;     var nomAb=el.dataset.nom,pendAb=parseFloat(el.dataset.pend);     G('OvAbonoT').textContent='Abonar — '+nomAb;     var objAb=S.abonoTipo==='p'?S.prest[k]:S.cred[k];     var sugAb=objAb?Math.min(cuotaReal(objAb),pendAb):0;     G('OvAbonoD').textContent=sugAb>0?'Cuota sugerida: '+fQ(sugAb)+' · Pendiente: '+fQ(pendAb):'Pendiente: '+fQ(pendAb);     G('InAbono').value=sugAb>0?sugAb.toFixed(2):'';     openOv('OvAbono');setTimeout(function(){G('InAbono').focus();G('InAbono').select();},100);return;   }   if(a==='liq'){     if(!confirm('¿Marcar como liquidado?'))return;     var tipo=el.dataset.t,pend2=parseFloat(el.dataset.pend);     var path=tipo==='p'?'prestamos':'creditos';     if(pend2>0)DB.ref('users/'+uid+'/'+path+'/'+k+'/abonos').push({monto:pend2,ts:Date.now()});     DB.ref('users/'+uid+'/'+path+'/'+k+'/liquidado').set(true);     addLog('prestamo',tipo==='p'?'Préstamo liquidado':'Compra liquidada',0);return;   }   if(a==='dl'){     if(!confirm('¿Eliminar?'))return;     DB.ref('users/'+uid+'/'+(el.dataset.t==='p'?'prestamos':'creditos')+'/'+k).remove();return;   }   if(a==='sa'){S.acctKey=k==='__gen__'?null:k;renderAccts();return;}   if(a==='da'){     e.stopPropagation();     if(!confirm('¿Eliminar esta cuenta?'))return;     RF.cuentas.child(k).remove();if(S.acctKey===k)S.acctKey=null;return;   }   if(a==='na'){     S.editAcctKey=null;S.acctEmo='🏦';G('OvCuentaT').textContent='Nueva cuenta';     G('InCNom').value='';G('InCBal').value='';     document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae==='🏦');});     openOv('OvCuenta');return;   }   if(a==='non'){     if(!('Notification'in window)){alert('No soportado.');return;}     Notification.requestPermission().then(function(p){       if(p!=='granted'){alert('Necesitas dar permiso de notificaciones.');return;}       var item=S.gastos[k];if(!item||!item.dia){alert('Agrega día de cobro primero.');return;}       var h2=new Date();h2.setHours(0,0,0,0);var c2=new Date(h2.getFullYear(),h2.getMonth(),item.dia);if(c2<=h2)c2.setMonth(c2.getMonth()+1);       var av=new Date(c2);av.setDate(av.getDate()-1);av.setHours(9,0,0,0);       var ts=av.getTime(),diff=ts-Date.now();       nids[k]=ts;localStorage.setItem('nids',JSON.stringify(nids));       if(diff>0&&diff<172800000)setTimeout(function(){if(nids[k]===ts)new Notification('🔔 '+item.emoji+' '+item.nombre+' se cobra mañana',{body:fQ(item.montoQ)});},diff);       renderNotif(Object.values(S.gastos));     });return;   }   if(a==='noff'){delete nids[k];localStorage.setItem('nids',JSON.stringify(nids));renderNotif(Object.values(S.gastos));return;}   if(a==='pcnon'){     if(!('Notification'in window)){alert('No soportado.');return;}     Notification.requestPermission().then(function(p){       if(p!=='granted'){alert('Necesitas dar permiso.');return;}       var obj2=el.dataset.t==='p'?S.prest[k]:S.cred[k];if(!obj2||!obj2.dia)return;       nidsPC[k]=true;localStorage.setItem('nidsPC',JSON.stringify(nidsPC));       var h3=new Date();h3.setHours(0,0,0,0);var c3=new Date(h3.getFullYear(),h3.getMonth(),obj2.dia);if(c3<=h3)c3.setMonth(c3.getMonth()+1);       var av2=new Date(c3);av2.setDate(av2.getDate()-1);av2.setHours(9,0,0,0);       var diff2=av2.getTime()-Date.now();       var lbl2=(obj2.objeto||obj2.nombre);       if(diff2>0&&diff2<172800000)setTimeout(function(){if(nidsPC[k])new Notification('⏰ Pago mañana — '+lbl2,{body:'Cuota de '+fQ(cuotaReal(obj2))+' vence mañana.'});},diff2);       render();     });return;   }   if(a==='pcnoff'){delete nidsPC[k];localStorage.setItem('nidsPC',JSON.stringify(nidsPC));render();return;}   if(a==='tpag'){     var mes=el.dataset.mes,monto=parseFloat(el.dataset.monto),uid2=AUTH.currentUser?AUTH.currentUser.uid:null;     if(!uid2)return;     if(!confirm('¿Marcar Q'+monto.toFixed(2)+' como pagado y agregarlo a tu saldo?'))return;     DB.ref('users/'+uid2+'/trabajo').once('value',function(snap){       var data=snap.val()||{};       Object.keys(data).forEach(function(k){         if(data[k].mes===mes&&!data[k].pagado){           DB.ref('users/'+uid2+'/trabajo/'+k+'/pagado').set(true);         }       });       // Add to balance       RF.saldo.once('value',function(s){RF.saldo.set((s.val()||0)+monto);});       addLog('ingreso','💼 Sueldo pagado '+mes+': +Q'+monto.toFixed(2),monto);       setTimeout(renderTrabajo,500);     });     return;   }   if(a==='tdel'){     var uid3=AUTH.currentUser?AUTH.currentUser.uid:null; if(!uid3)return;     if(!confirm('¿Eliminar este registro?'))return;     DB.ref('users/'+uid3+'/trabajo/'+k).remove();     setTimeout(renderTrabajo,300);return;   } });   // ── TRABAJO / SUELDO ─────────────────────────────────────
+var tMoneda=localStorage.getItem('tMoneda')||'GTQ';
+var tPayH=parseFloat(localStorage.getItem('tPayH'))||0;
+function tPayHInQ(){return tMoneda==='USD'?tPayH*S.tasa:tPayH;}
+function updSueldoInfo(){
+  var el=document.getElementById('TSueldoInfo');if(!el)return;
+  if(!tPayH){el.textContent='Sin configurar. Ingresa tu pago por hora arriba.';return;}
+  var q=tPayHInQ();
+  el.innerHTML='<strong>Hora: '+(tMoneda==='USD'?'$'+tPayH.toFixed(2)+' = Q'+q.toFixed(2):'Q'+tPayH.toFixed(2))+'</strong> | Dia 8h: <strong>Q'+(q*8).toFixed(2)+'</strong>';
+  var inp=document.getElementById('TPayH');if(inp&&!inp.value)inp.value=tPayH;
 }
-
-function renderP(arr){
-  var tP=0,tR=0,h='';
-  arr.forEach(function(p){
-    var ab=sumAb(p),pend=Math.max(p.monto-ab,0),pct=Math.min(ab/p.monto*100,100);
-    if(!p.liquidado&&p.tipo==='p')tP+=pend;
-    if(!p.liquidado&&p.tipo==='r')tR+=pend;
-    var cu=p.cuotas?'Cuota: '+fQ(p.cuotaVal||cuotaReal(p))+' ×'+p.cuotas:'';
-    h+=lCard(p.fbKey,p.tipo==='p'?'lp':'lr',p.tipo==='p'?'💸':'🤝',p.nombre,'',p.tipo==='p'?'Yo presté':'Me prestaron',p.tipo==='p'?'lp':'lr',p.monto,p.fecha,p.nota,pct,ab,pend,cu,p.abonos?Object.values(p.abonos):[],p.liquidado,'p',p.dia||null);
-  });
-  G('LP').innerHTML=h||'<div class="empty">Sin préstamos.</div>';
-  G('LsP').textContent=fQ(tP);G('LsPs').textContent=arr.filter(function(p){return !p.liquidado&&p.tipo==='p';}).length+' activo(s)';
-  G('LsR').textContent=fQ(tR);G('LsRs').textContent=arr.filter(function(p){return !p.liquidado&&p.tipo==='r';}).length+' activo(s)';
+function mesActual(){var now=new Date();return now.getFullYear()+'-'+(now.getMonth()+1<10?'0':'')+(now.getMonth()+1);}
+function registrarDia(horas,esExtra,pagoExtra){
+  if(!tPayH&&!esExtra){alert('Primero configura tu pago por hora.');return;}
+  var q=esExtra?pagoExtra:tPayHInQ()*horas;
+  var tipo=esExtra?'extra':horas===8?'completo':'parcial';
+  var desc=esExtra?horas+'h extra - Q'+q.toFixed(2):horas+'h trabajadas - Q'+q.toFixed(2);
+  var mes=prompt('Mes (YYYY-MM, ej: 2025-06). Vacio = mes actual:');
+  if(mes===null)return;
+  if(!mes||!/^\d{4}-\d{2}$/.test(mes))mes=mesActual();
+  var uid=AUTH.currentUser?AUTH.currentUser.uid:null;if(!uid)return;
+  DB.ref('users/'+uid+'/trabajo').push({tipo:tipo,horas:horas,monto:q,mes:mes,desc:desc,ts:Date.now(),pagado:false,esExtra:esExtra||false});
+  addLog('saldo',desc,0);
+  setTimeout(renderTrabajo,500);
 }
-
-function renderC(arr){
-  var tD=0,tC=0,h='';
-  arr.forEach(function(c){
-    var ab=sumAb(c),pend=Math.max(c.monto-ab,0),pct=Math.min(ab/c.monto*100,100);
-    if(!c.liquidado&&c.tipo==='d')tD+=pend;
-    if(!c.liquidado&&c.tipo==='y')tC+=pend;
-    var cu=c.cuotas?'Cuota: '+fQ(c.cuotaVal||cuotaReal(c))+' ×'+c.cuotas:'';
-    h+=lCard(c.fbKey,c.tipo==='d'?'ld':'ly',c.tipo==='d'?'🛍️':'💳',c.nombre,c.objeto||'',c.tipo==='d'?'Alguien me compró':'Yo compré',c.tipo==='d'?'ld':'ly',c.monto,c.fecha,c.nota,pct,ab,pend,cu,c.abonos?Object.values(c.abonos):[],c.liquidado,'c',c.dia||null);
-  });
-  G('LC').innerHTML=h||'<div class="empty">Sin compras a crédito.</div>';
-  G('CsD').textContent=fQ(tD);G('CsDs').textContent=arr.filter(function(c){return !c.liquidado&&c.tipo==='d';}).length+' pendiente(s)';
-  G('CsC').textContent=fQ(tC);G('CsCs').textContent=arr.filter(function(c){return !c.liquidado&&c.tipo==='y';}).length+' pendiente(s)';
-}
-
-function renderAccts(){
-  var arr=Object.values(S.cuentas),h='';
-  h+='<div class="ac'+(S.acctKey===null?' sel':'')+'" data-a="sa" data-k="__gen__"><div class="ac-ico">🏠</div><div class="ac-nom">General</div><div class="ac-bal">'+fQ(S.base)+'</div></div>';
-  arr.forEach(function(a){
-    h+='<div class="ac'+(S.acctKey===a.fbKey?' sel':'')+'" data-a="sa" data-k="'+a.fbKey+'"><div class="ac-ico">'+a.emoji+'</div><div class="ac-nom">'+a.nombre+'</div><div class="ac-bal">'+fQ(a.saldo)+'</div><button class="ac-del" data-a="da" data-k="'+a.fbKey+'">✕</button></div>';
-  });
-  h+='<div class="ac-add" data-a="na"><div class="ac-plus">＋</div><div class="ac-lbl">Nueva</div></div>';
-  G('acctRow').innerHTML=h;
-  G('acctNm').textContent=S.acctKey&&S.cuentas[S.acctKey]?S.cuentas[S.acctKey].nombre:'General';
-}
-
-function renderLog(){
-  var el=G('LLog');
-  var arr=Object.values(S.logData).sort(function(a,b){return b.ts-a.ts;});
-  var f=S.logF==='todo'?arr:arr.filter(function(e){return e.tipo===S.logF;});
-  if(!f.length){el.innerHTML='<div class="empty">Sin registros.</div>';return;}
-  var ic={saldo:'💵',add:'🔴',remove:'⬜',ingreso:'🟡',prestamo:'🟠',daily:'📊'};
-  el.innerHTML=f.map(function(e){
-    return '<div class="log-e"><div class="log-ico '+e.tipo+'">'+(ic[e.tipo]||'•')+'</div><div class="log-b"><div class="log-d">'+e.desc+'</div><div class="log-t">'+fH(e.ts)+'</div></div>'+(e.amt!==null?'<div class="log-a '+(e.amt>=0?'pos':'neg')+'">'+(e.amt>=0?'+':'-')+fQ(e.amt)+'</div>':'')+'</div>';
-  }).join('');
-}
-
-function renderAlerts(arr){
-  var al=[];
-  arr.filter(function(i){return i.on&&i.dia;}).forEach(function(i){var d=dC(i.dia);if(d===0||d===1)al.push({lbl:(d===0?'🚨 ¡Hoy se cobra':'⏰ Mañana se cobra')+' <strong>'+i.nombre+'</strong> — '+fQ(i.montoQ)});});
-  Object.values(S.prest).filter(function(p){return !p.liquidado&&p.dia;}).forEach(function(p){var d=dC(p.dia);if(d===0)al.push({lbl:'🚨 ¡Hoy vence cuota de <strong>'+p.nombre+'</strong>'});else if(d===1)al.push({lbl:'⏰ Mañana vence cuota de <strong>'+p.nombre+'</strong>'});});
-  Object.values(S.cred).filter(function(c){return !c.liquidado&&c.dia;}).forEach(function(c){var d=dC(c.dia);if(d===0)al.push({lbl:'🚨 ¡Hoy vence cuota de <strong>'+(c.objeto||c.nombre)+'</strong>'});else if(d===1)al.push({lbl:'⏰ Mañana vence cuota de <strong>'+(c.objeto||c.nombre)+'</strong>'});});
-  var badge=G('alertBadge');
-  ['alertBox','alertBox2'].forEach(function(id){
-    var b=G(id);if(!b)return;
-    if(!al.length){b.className='alerts';return;}
-    b.className='alerts on';
-    b.innerHTML=al.map(function(x){return '<div class="al-it"><span>'+x.lbl+'</span><button class="al-x">✕</button></div>';}).join('');
-  });
-  if(badge)badge.style.display=al.length?'inline':'none';
-}
-
-function renderNotif(arr){
-  var el=G('LNot');
-  var m=arr.filter(function(i){return i.freq==='Mensual'&&i.dia;});
-  if(!m.length){el.innerHTML='<div class="empty" style="margin-top:10px">Agrega un gasto Mensual con día de cobro.</div>';return;}
-  el.innerHTML=m.map(function(item){
-    var on=!!nids[item.fbKey],d=dC(item.dia);
-    return '<div class="nc"><div class="nc-row"><div style="font-size:19px">'+item.emoji+'</div><div style="flex:1"><div class="nc-name">'+item.nombre+' — '+fQ(item.montoQ)+'</div><div class="nc-sub">Día '+item.dia+' · en '+d+'d</div></div>'+(on?'<button class="btn-not off" data-a="noff" data-k="'+item.fbKey+'">Apagar</button>':'<button class="btn-not" data-a="non" data-k="'+item.fbKey+'">Activar 🔔</button>')+'</div></div>';
-  }).join('');
-}
-
-var customPres=parseFloat(localStorage.getItem('customPres'))||0;
-function renderResumen(){
-  var el=G('ResumenM');if(!el)return;
-  var gF=Object.values(S.gastos).filter(function(g){return g.on&&g.freq==='Mensual';});
-  var pA=Object.values(S.prest).filter(function(p){return !p.liquidado;});
-  var cA=Object.values(S.cred).filter(function(c){return !c.liquidado;});
-  var tG=gF.reduce(function(s,g){return s+g.montoQ;},0);
-  var tP=pA.reduce(function(s,p){return s+cuotaReal(p);},0);
-  var tC=cA.reduce(function(s,c){return s+cuotaReal(c);},0);
-  var total=tG+tP+tC;
-  var overpaid=parseFloat(localStorage.getItem('overpaidAmt'))||0;
-  var ovMonth=localStorage.getItem('overpaidMonth')||'';
-  var mesAct=new Date().toISOString().slice(0,7);
-  if(ovMonth!==mesAct)overpaid=0;
-  var totalAj=Math.max(total-overpaid,0);
-  if(!gF.length&&!pA.length&&!cA.length){el.innerHTML='<div class="empty">Agrega gastos mensuales, préstamos o créditos con cuotas.</div>';return;}
-  var h='<div class="rm-card"><div class="rm-header"><span class="rm-title">Total a pagar este mes</span><span class="rm-total">'+fQ(total)+'</span></div>';
-  if(gF.length){h+='<div class="rm-section-lbl">Gastos y suscripciones</div>';gF.forEach(function(g){h+='<div class="rm-row"><span class="rm-row-lbl">'+g.emoji+' '+g.nombre+(g.dia?' · día '+g.dia:'')+'</span><span class="rm-row-amt r">'+fQ(g.montoQ)+'</span></div>';});}
-  if(pA.length){h+='<div class="rm-section-lbl">Cuotas préstamos</div>';pA.forEach(function(p){var cq=cuotaReal(p),cnt=p.abonos?Object.values(p.abonos).length:0;h+='<div class="rm-row"><span class="rm-row-lbl">🤝 '+p.nombre+(p.dia?' · día '+p.dia:'')+(p.cuotas?' ('+cnt+'/'+p.cuotas+')':'')+'</span><span class="rm-row-amt o">'+fQ(cq)+'</span></div>';});}
-  if(cA.length){h+='<div class="rm-section-lbl">Cuotas créditos</div>';cA.forEach(function(c){var cq=cuotaReal(c),cnt=c.abonos?Object.values(c.abonos).length:0;h+='<div class="rm-row"><span class="rm-row-lbl">🛍️ '+(c.objeto||c.nombre)+(c.dia?' · día '+c.dia:'')+(c.cuotas?' ('+cnt+'/'+c.cuotas+')':'')+'</span><span class="rm-row-amt o">'+fQ(cq)+'</span></div>';});}
-  if(overpaid>0)h+='<div class="rm-overpaid">✅ Pagaste de más el mes pasado: <strong>'+fQ(overpaid)+'</strong><br>Este mes solo pagas: <strong>'+fQ(totalAj)+'</strong></div>';
-  var saldoTras=S.base-total;
-  h+='<div class="rm-saldo-disp"><span class="rm-saldo-lbl">Saldo tras pagar todo</span><span class="rm-saldo-val '+(saldoTras>=0?'pos':'neg')+'">'+(saldoTras<0?'−':'')+fQ(saldoTras)+'</span></div>';
-  h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,175,55,.08)"><div style="font-size:11px;color:var(--sub);font-weight:600;margin-bottom:6px">💰 Presupuesto mensual personalizado</div>';
-  h+='<div class="rm-custom"><input type="number" id="RmPres" placeholder="Ej: 2000.00" value="'+(customPres||'')+'" inputmode="decimal"/><button id="RmPresBtn">Guardar</button></div>';
-  if(customPres>0){var disp=customPres-total;h+='<div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:var(--sub)">Presupuesto restante</span><span style="font-size:14px;font-weight:700;color:'+(disp>=0?'var(--gold)':'var(--red)')+'">'+(disp<0?'−':'')+fQ(disp)+'</span></div>';}
-  h+='</div>';
-  h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(212,175,55,.08)"><div style="font-size:11px;color:var(--sub);font-weight:600;margin-bottom:6px">📝 Registrar pago del mes</div>';
-  h+='<div class="rm-custom"><input type="number" id="RmPago" placeholder="¿Cuánto pagaste?" inputmode="decimal"/><button id="RmPagoBtn">Registrar</button></div></div></div>';
-  el.innerHTML=h;
-  var pb=G('RmPresBtn');
-  if(pb)pb.addEventListener('click',function(){var v=parseFloat(G('RmPres').value)||0;customPres=v;localStorage.setItem('customPres',v);renderResumen();});
-  var pgb=G('RmPagoBtn');
-  if(pgb)pgb.addEventListener('click',function(){
-    var v=parseFloat(G('RmPago').value);if(!v||v<=0)return;
-    var diff=v-total;
-    var nextM=new Date();nextM.setMonth(nextM.getMonth()+1);
-    if(diff>0){localStorage.setItem('overpaidAmt',diff);localStorage.setItem('overpaidMonth',nextM.toISOString().slice(0,7));alert('✅ Pagaste Q'+diff.toFixed(2)+' de más — se descontará del próximo mes.');}
-    else if(diff<0)alert('⚠️ Pagaste Q'+Math.abs(diff).toFixed(2)+' menos de lo esperado.');
-    else alert('✅ Pago exacto registrado.');
-    addLog('saldo','Pago mensual: '+fQ(v)+' (esperado: '+fQ(total)+')',v);
-    renderResumen();
-  });
-}
-
-// ── FIREBASE LISTENERS ────────────────────────────────────
-ss('sy','Esperando…');
-window.addEventListener('offline',function(){ss('off','Sin conexión');});
-window.addEventListener('online',function(){ss('sy','Reconectando…');});
-var _L=[];
-function detachAll(){_L.forEach(function(f){f();});_L=[];}
-function listenOn(r,fn){r.on('value',fn);_L.push(function(){r.off('value',fn);});}
-function startListeners(){
-  listenOn(RF.saldo,function(s){S.base=s.val()||0;ss('on','Sincronizado ✓');render();});
-  listenOn(RF.gastos,function(s){var r=s.val()||{};S.gastos={};Object.keys(r).forEach(function(k){S.gastos[k]=Object.assign({},r[k],{fbKey:k});});render();});
-  listenOn(RF.ing,function(s){var r=s.val()||{};S.ing={};Object.keys(r).forEach(function(k){S.ing[k]=Object.assign({},r[k],{fbKey:k});});render();});
-  listenOn(RF.log,function(s){S.logData=s.val()||{};renderLog();});
-  listenOn(RF.prest,function(s){var r=s.val()||{};S.prest={};Object.keys(r).forEach(function(k){S.prest[k]=Object.assign({},r[k],{fbKey:k});});render();});
-  listenOn(RF.cred,function(s){var r=s.val()||{};S.cred={};Object.keys(r).forEach(function(k){S.cred[k]=Object.assign({},r[k],{fbKey:k});});render();});
-  listenOn(RF.cuentas,function(s){var r=s.val()||{};S.cuentas={};Object.keys(r).forEach(function(k){S.cuentas[k]=Object.assign({},r[k],{fbKey:k});});renderAccts();});
-}
-
-// ── AUTH ──────────────────────────────────────────────────
-// ── EMAIL/PASSWORD AUTH ─────────────────────────────────
-function switchAuthTab(tab){
-  var isLogin = tab === 'login';
-  document.getElementById('LFormLogin').style.display = isLogin ? 'block' : 'none';
-  document.getElementById('LFormReg').style.display = isLogin ? 'none' : 'block';
-  document.getElementById('LTabLogin').style.background = isLogin ? 'linear-gradient(135deg,#d4af37,#b8860b)' : 'none';
-  document.getElementById('LTabLogin').style.color = isLogin ? '#0a0800' : 'rgba(212,175,55,.5)';
-  document.getElementById('LTabReg').style.background = isLogin ? 'none' : 'linear-gradient(135deg,#d4af37,#b8860b)';
-  document.getElementById('LTabReg').style.color = isLogin ? 'rgba(212,175,55,.5)' : '#0a0800';
-  document.getElementById('LErr').style.display = 'none';
-  document.getElementById('LMsg').style.display = 'none';
-}
-
-function showLErr(msg){ var e=document.getElementById('LErr'); e.textContent=msg; e.style.display='block'; }
-function showLMsg(msg){ var e=document.getElementById('LMsg'); e.textContent=msg; e.style.display='block'; }
-function hideLErr(){ document.getElementById('LErr').style.display='none'; document.getElementById('LMsg').style.display='none'; }
-
-function setLoading(btnId, loading){
-  var btn = document.getElementById(btnId);
-  if(!btn) return;
-  btn.style.opacity = loading ? '0.6' : '1';
-  btn.style.pointerEvents = loading ? 'none' : 'auto';
-  if(loading) btn.textContent = '⏳ Cargando...';
-}
-
-document.getElementById('LBtnLogin').addEventListener('click', function(){
-  var email = document.getElementById('LEmail').value.trim();
-  var pass = document.getElementById('LPass').value;
-  if(!email || !pass){ showLErr('Ingresa tu email y contraseña.'); return; }
-  hideLErr(); setLoading('LBtnLogin', true);
-  AUTH.signInWithEmailAndPassword(email, pass)
-    .catch(function(err){
-      setLoading('LBtnLogin', false);
-      var msgs = {
-        'auth/user-not-found': 'No existe una cuenta con ese email.',
-        'auth/wrong-password': 'Contraseña incorrecta.',
-        'auth/invalid-email': 'Email inválido.',
-        'auth/too-many-requests': 'Demasiados intentos. Espera un momento.',
-        'auth/invalid-credential': 'Email o contraseña incorrectos.'
-      };
-      showLErr(msgs[err.code] || 'Error: ' + err.message);
-    });
-});
-
-document.getElementById('LBtnReg').addEventListener('click', function(){
-  var nom = document.getElementById('RNom').value.trim();
-  var email = document.getElementById('REmail').value.trim();
-  var pass = document.getElementById('RPass').value;
-  var pass2 = document.getElementById('RPass2').value;
-  if(!nom){ showLErr('Ingresa tu nombre.'); return; }
-  if(!email){ showLErr('Ingresa tu email.'); return; }
-  if(pass.length < 6){ showLErr('La contraseña debe tener al menos 6 caracteres.'); return; }
-  if(pass !== pass2){ showLErr('Las contraseñas no coinciden.'); return; }
-  hideLErr(); setLoading('LBtnReg', true);
-  AUTH.createUserWithEmailAndPassword(email, pass)
-    .then(function(cred){
-      return cred.user.updateProfile({displayName: nom});
-    })
-    .then(function(){
-      // Save user to DB for admin panel
-      var uid = AUTH.currentUser.uid;
-      DB.ref('usuarios/'+uid).set({
-        nombre: nom, email: email,
-        creado: Date.now(), plan: 'free', activo: true
-      });
-    })
-    .catch(function(err){
-      setLoading('LBtnReg', false);
-      var msgs = {
-        'auth/email-already-in-use': 'Ya existe una cuenta con ese email.',
-        'auth/invalid-email': 'Email inválido.',
-        'auth/weak-password': 'Contraseña muy débil. Usa al menos 6 caracteres.'
-      };
-      showLErr(msgs[err.code] || 'Error: ' + err.message);
-    });
-});
-
-document.getElementById('LBtnForgot').addEventListener('click', function(){
-  var email = document.getElementById('LEmail').value.trim();
-  if(!email){ showLErr('Ingresa tu email primero.'); return; }
-  AUTH.sendPasswordResetEmail(email)
-    .then(function(){ showLMsg('✅ Te enviamos un link para restablecer tu contraseña.'); })
-    .catch(function(err){ showLErr('Error: ' + err.message); });
-});
-
-// Enter key support
-document.getElementById('LPass').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') document.getElementById('LBtnLogin').click();
-});
-document.getElementById('LEmail').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') document.getElementById('LPass').focus();
-});
-document.getElementById('RPass2').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') document.getElementById('LBtnReg').click();
-});
-
-// ── EMAIL AUTH ───────────────────────────────────────────
-function switchAuthTab(tab){
-  var il=tab==='login';
-  document.getElementById('LFormLogin').style.display=il?'block':'none';
-  document.getElementById('LFormReg').style.display=il?'none':'block';
-  var tl=document.getElementById('LTabLogin'),tr=document.getElementById('LTabReg');
-  tl.style.background=il?'linear-gradient(135deg,#d4af37,#b8860b)':'none';
-  tl.style.color=il?'#0a0800':'rgba(212,175,55,.5)';
-  tr.style.background=il?'none':'linear-gradient(135deg,#d4af37,#b8860b)';
-  tr.style.color=il?'rgba(212,175,55,.5)':'#0a0800';
-  document.getElementById('LErr').style.display='none';
-  document.getElementById('LMsg').style.display='none';
-}
-function showErr(m){var e=document.getElementById('LErr');e.textContent=m;e.style.display='block';}
-function showMsg(m){var e=document.getElementById('LMsg');e.textContent=m;e.style.display='block';}
-function setBtn(id,loading){
-  var b=document.getElementById(id);if(!b)return;
-  b.style.opacity=loading?'0.6':'1';
-  b.style.pointerEvents=loading?'none':'auto';
-  if(loading)b.textContent='⏳ Cargando...';
-  else b.textContent=id==='LBtnLogin'?'Entrar':'Crear cuenta';
-}
-var ERRS={
-  'auth/user-not-found':'No existe cuenta con ese email.',
-  'auth/wrong-password':'Contraseña incorrecta.',
-  'auth/invalid-credential':'Email o contraseña incorrectos.',
-  'auth/invalid-email':'Email inválido.',
-  'auth/too-many-requests':'Demasiados intentos. Espera un momento.',
-  'auth/email-already-in-use':'Ya existe una cuenta con ese email.',
-  'auth/weak-password':'Contraseña muy débil. Usa mínimo 6 caracteres.'
-};
-document.getElementById('LBtnLogin').addEventListener('click',function(){
-  var email=document.getElementById('LEmail').value.trim();
-  var pass=document.getElementById('LPass').value;
-  if(!email||!pass){showErr('Ingresa tu email y contraseña.');return;}
-  document.getElementById('LErr').style.display='none';
-  setBtn('LBtnLogin',true);
-  AUTH.signInWithEmailAndPassword(email,pass).catch(function(err){
-    setBtn('LBtnLogin',false);
-    showErr(ERRS[err.code]||'Error: '+err.message);
-  });
-});
-document.getElementById('LBtnReg').addEventListener('click',function(){
-  var nom=document.getElementById('RNom').value.trim();
-  var email=document.getElementById('REmail').value.trim();
-  var pass=document.getElementById('RPass').value;
-  var pass2=document.getElementById('RPass2').value;
-  if(!nom){showErr('Ingresa tu nombre.');return;}
-  if(!email){showErr('Ingresa tu email.');return;}
-  if(pass.length<6){showErr('Contraseña mínimo 6 caracteres.');return;}
-  if(pass!==pass2){showErr('Las contraseñas no coinciden.');return;}
-  document.getElementById('LErr').style.display='none';
-  setBtn('LBtnReg',true);
-  AUTH.createUserWithEmailAndPassword(email,pass).then(function(cred){
-    return cred.user.updateProfile({displayName:nom});
-  }).then(function(){
-    var uid=AUTH.currentUser.uid;
-    DB.ref('usuarios/'+uid).set({nombre:nom,email:email,creado:Date.now(),plan:'free',activo:true});
-  }).catch(function(err){
-    setBtn('LBtnReg',false);
-    showErr(ERRS[err.code]||'Error: '+err.message);
-  });
-});
-document.getElementById('LBtnForgot').addEventListener('click',function(){
-  var email=document.getElementById('LEmail').value.trim();
-  if(!email){showErr('Ingresa tu email primero.');return;}
-  AUTH.sendPasswordResetEmail(email).then(function(){
-    showMsg('✅ Revisa tu email para restablecer tu contraseña.');
-  }).catch(function(err){showErr('Error: '+err.message);});
-});
-document.getElementById('LPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LBtnLogin').click();});
-document.getElementById('LEmail').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LPass').focus();});
-document.getElementById('RPass2').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('LBtnReg').click();});
-
-AUTH.onAuthStateChanged(function(user){
-  if(user){
-    G('LS').style.display='none';
-    G('UBar').style.display='flex';
-    G('AW').style.display='block';
-    G('UNm').textContent=user.displayName||user.email.split('@')[0]||'Usuario';
-    G('UEm').textContent=user.email||'';
-    if(user.photoURL)G('UAv').src=user.photoURL;
-    else G('UAv').style.display='none';
-    // Save login to DB
-    DB.ref('usuarios/'+user.uid).update({ultimoLogin: Date.now(), email: user.email, nombre: user.displayName||user.email.split('@')[0]});
-    // Reset loading state
-    var lb=document.getElementById('LBtnLogin');
-    if(lb){lb.style.opacity='1';lb.style.pointerEvents='auto';lb.textContent='Entrar';}
-    initRF(user.uid);detachAll();startListeners();fetchTasa();
-    setTimeout(initAnims,300);
-  } else {
-    G('LS').style.display='flex';
-    G('UBar').style.display='none';
-    G('AW').style.display='none';
-    detachAll();
-    S.base=0;S.gastos={};S.ing={};S.logData={};S.prest={};S.cred={};S.cuentas={};
-  }
-});
-// Login handled by email/password above
-G('UOut').addEventListener('click',function(){if(confirm('¿Cerrar sesión?'))AUTH.signOut();});
-
-// ── TABS ─────────────────────────────────────────────────
-function setTab(vid,btn){
-  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-  G(vid).classList.add('on');btn.classList.add('on');
-}
-G('TabG').addEventListener('click',function(){setTab('VG',this);});
-G('TabI').addEventListener('click',function(){setTab('VI',this);});
-G('TabP').addEventListener('click',function(){setTab('VP',this);});
-G('TabH').addEventListener('click',function(){setTab('VH',this);});
-G('TabT').addEventListener('click',function(){setTab('VT',this);renderTrabajo();});
-G('TabA').addEventListener('click',function(){setTab('VA',this);});
-
-// ── INGRESO RÁPIDO ────────────────────────────────────────
-G('BtnIngRap').addEventListener('click',function(){G('InIng').value='';G('OvIngD').textContent='Monto en Quetzales';openOv('OvIng');setTimeout(function(){G('InIng').focus();},100);});
-G('BtnCIng').addEventListener('click',function(){closeOv('OvIng');});
-G('OvIng').addEventListener('click',function(e){if(e.target===this)closeOv('OvIng');});
-G('BtnOkIng').addEventListener('click',function(){
-  var v=parseFloat(G('InIng').value);if(!v||v<=0)return;
-  RF.ing.push({emoji:'💰',nombre:'Ingreso rápido',tipo:'Transferencia',monto:v,sumar:'si',ts:Date.now()});
-  addLog('ingreso','Ingreso rápido: +'+fQ(v),v);closeOv('OvIng');
-});
-G('QChips').addEventListener('click',function(e){
-  var ch=e.target.closest('.chip');if(!ch)return;
-  if(ch.id==='ChipOtro'){G('InIng').value='';openOv('OvIng');setTimeout(function(){G('InIng').focus();},100);return;}
-  var m=parseFloat(ch.dataset.q);G('InIng').value=m;G('OvIngD').textContent='Monto: '+fQ(m);openOv('OvIng');
-});
-
-// ── SALDO BASE / CUENTA ───────────────────────────────────
-G('BtnEditBase').addEventListener('click',function(){
-  if(S.acctKey&&S.cuentas[S.acctKey]){
-    var a=S.cuentas[S.acctKey];S.editAcctKey=S.acctKey;
-    G('OvCuentaT').textContent='Editar: '+a.nombre;
-    G('InCNom').value=a.nombre;G('InCBal').value=a.saldo;S.acctEmo=a.emoji;
-    document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae===a.emoji);});
-    openOv('OvCuenta');
-  } else {
-    G('InSaldo').value=S.base||'';openOv('OvSaldo');setTimeout(function(){G('InSaldo').focus();},100);
-  }
-});
-G('OvSaldo').addEventListener('click',function(e){if(e.target===this)closeOv('OvSaldo');});
-G('BtnCSaldo').addEventListener('click',function(){closeOv('OvSaldo');});
-G('BtnOkSaldo').addEventListener('click',function(){
-  var v=parseFloat(G('InSaldo').value);
-  if(!isNaN(v)&&v>=0){addLog('saldo','Saldo base: '+fQ(v),v);RF.saldo.set(v);}
-  closeOv('OvSaldo');
-});
-
-// ── ABONO ─────────────────────────────────────────────────
-G('OvAbono').addEventListener('click',function(e){if(e.target===this){closeOv('OvAbono');S.abonoKey=null;S.abonoTipo=null;}});
-G('BtnCAbono').addEventListener('click',function(){closeOv('OvAbono');S.abonoKey=null;S.abonoTipo=null;});
-G('BtnAbonoSug').addEventListener('click',function(){
-  var obj=S.abonoTipo==='p'?S.prest[S.abonoKey]:S.cred[S.abonoKey];if(!obj)return;
-  var ab=sumAb(obj),pend=Math.max(obj.monto-ab,0),sug=cuotaReal(obj);
-  G('InAbono').value=Math.min(sug,pend).toFixed(2);G('InAbono').focus();G('InAbono').select();
-});
-G('BtnAbonoTodo').addEventListener('click',function(){
-  var obj=S.abonoTipo==='p'?S.prest[S.abonoKey]:S.cred[S.abonoKey];if(!obj)return;
-  var pend=Math.max(obj.monto-sumAb(obj),0);G('InAbono').value=pend.toFixed(2);G('InAbono').focus();G('InAbono').select();
-});
-G('BtnOkAbono').addEventListener('click',function(){
-  var v=parseFloat(G('InAbono').value);if(!v||v<=0)return;
-  if(S.abonoTipo==='p'){var p=S.prest[S.abonoKey];DB.ref('users/'+AUTH.currentUser.uid+'/prestamos/'+S.abonoKey+'/abonos').push({monto:v,ts:Date.now()});addLog('prestamo','Abono '+p.nombre+': +'+fQ(v),v);}
-  else{var c=S.cred[S.abonoKey];DB.ref('users/'+AUTH.currentUser.uid+'/creditos/'+S.abonoKey+'/abonos').push({monto:v,ts:Date.now()});addLog('prestamo','Cuota '+(c.objeto||c.nombre)+': +'+fQ(v),v);}
-  S.abonoKey=null;S.abonoTipo=null;closeOv('OvAbono');
-});
-
-// ── CUENTAS ───────────────────────────────────────────────
-G('AeRow').addEventListener('click',function(e){var ae=e.target.closest('[data-ae]');if(!ae)return;S.acctEmo=ae.dataset.ae;document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae===S.acctEmo);});});
-G('OvCuenta').addEventListener('click',function(e){if(e.target===this){closeOv('OvCuenta');S.editAcctKey=null;}});
-G('BtnCCuenta').addEventListener('click',function(){closeOv('OvCuenta');S.editAcctKey=null;});
-G('BtnOkCuenta').addEventListener('click',function(){
-  var nom=G('InCNom').value.trim(),bal=parseFloat(G('InCBal').value)||0;if(!nom)return;
-  if(S.editAcctKey){RF.cuentas.child(S.editAcctKey).update({emoji:S.acctEmo,nombre:nom,saldo:bal});addLog('saldo','Cuenta actualizada: '+nom,bal);S.editAcctKey=null;}
-  else{RF.cuentas.push({emoji:S.acctEmo,nombre:nom,saldo:bal});addLog('saldo','Cuenta creada: '+S.acctEmo+' '+nom,bal);}
-  closeOv('OvCuenta');
-});
-
-// ── MODAL GASTO ───────────────────────────────────────────
-function buildEG(id,arr,sel,tipo){var h='';arr.forEach(function(e){h+='<div class="ep'+(e===sel?' on':'')+'" data-em="'+tipo+'" data-ev="'+e+'">'+e+'</div>';});G(id).innerHTML=h;}
-G('BtnNG').addEventListener('click',function(){
-  buildEG('EgG',EG,S.eG,'g');['GNom','GMon','GDia'].forEach(function(id){G(id).value='';});
-  G('GFrq').value='Mensual';S.moneda='GTQ';G('CbQ').classList.add('on');G('CbU').classList.remove('on');
-  G('GMonLbl').textContent='Monto (Q)';G('GPrev').textContent='';G('GDiaW').style.display='block';
-  openOv('ModG');setTimeout(function(){G('GNom').focus();},150);
-});
-G('ModG').addEventListener('click',function(e){if(e.target===this)closeOv('ModG');});
-G('CbQ').addEventListener('click',function(){S.moneda='GTQ';G('CbQ').classList.add('on');G('CbU').classList.remove('on');G('GMonLbl').textContent='Monto (Q)';updPrev();});
-G('CbU').addEventListener('click',function(){S.moneda='USD';G('CbU').classList.add('on');G('CbQ').classList.remove('on');G('GMonLbl').textContent='Monto ($)';updPrev();});
-G('GMon').addEventListener('input',updPrev);
-function updPrev(){var v=parseFloat(G('GMon').value),el=G('GPrev');if(!v||isNaN(v)){el.textContent='';return;}el.textContent=S.moneda==='USD'?'= Q'+(v*S.tasa).toFixed(2)+' (tasa actual Q'+S.tasa.toFixed(4)+'  Banguat)':'= $'+(v/S.tasa).toFixed(2)+' USD';}
-G('GFrq').addEventListener('change',function(){G('GDiaW').style.display=this.value==='Mensual'?'block':'none';});
-G('BtnSvG').addEventListener('click',function(){
-  var nom=G('GNom').value.trim(),monRaw=parseFloat(G('GMon').value),frq=G('GFrq').value,dia=parseInt(G('GDia').value)||null;
-  if(!nom||!monRaw||monRaw<=0)return;
-  var mQ=S.moneda==='USD'?parseFloat((monRaw*S.tasa).toFixed(2)):monRaw;
-  var mU=S.moneda==='USD'?monRaw:parseFloat((monRaw/S.tasa).toFixed(2));
-  var tasaUsada=S.moneda==='USD'?S.tasa:null;
-  RF.gastos.push({emoji:S.eG,nombre:nom,montoQ:mQ,montoUSD:mU,moneda:S.moneda,tasaUsada:tasaUsada,freq:frq,dia:dia,on:true});
-  var desc='Gasto: '+S.eG+' '+nom+' ('+fQ(mQ)+')';
-  if(S.moneda==='USD')desc+=' · $'+monRaw.toFixed(2)+' @ Q'+S.tasa.toFixed(4);
-  addLog('add',desc,mQ);closeOv('ModG');
-});
-
-// ── MODAL INGRESO ─────────────────────────────────────────
-G('BtnNI').addEventListener('click',function(){buildEG('EgI',EI,S.eI,'i');G('INom').value='';G('IMon').value='';openOv('ModI');setTimeout(function(){G('INom').focus();},150);});
-G('ModI').addEventListener('click',function(e){if(e.target===this)closeOv('ModI');});
-G('BtnSvI').addEventListener('click',function(){
-  var nom=G('INom').value.trim(),mon=parseFloat(G('IMon').value),tip=G('ITip').value,sum=G('ISum').value;
-  if(!nom||!mon||mon<=0)return;
-  RF.ing.push({emoji:S.eI,nombre:nom,tipo:tip,monto:mon,sumar:sum,ts:Date.now()});
-  addLog('ingreso',tip+': '+S.eI+' '+nom+' (+'+fQ(mon)+')',mon);closeOv('ModI');
-});
-
-// ── MODAL PRÉSTAMO ────────────────────────────────────────
-G('BtnNP').addEventListener('click',function(){
-  ['PNom','PMon','PCuo','PCuoV','PDia','PNot'].forEach(function(id){G(id).value='';});
-  G('PFec').value=new Date().toISOString().split('T')[0];
-  S.loanT='p';G('TtP').className='tt onr';G('TtR').className='tt';
-  openOv('ModP');setTimeout(function(){G('PNom').focus();},150);
-});
-G('ModP').addEventListener('click',function(e){if(e.target===this)closeOv('ModP');});
-G('TtP').addEventListener('click',function(){S.loanT='p';G('TtP').className='tt onr';G('TtR').className='tt';});
-G('TtR').addEventListener('click',function(){S.loanT='r';G('TtR').className='tt ong';G('TtP').className='tt';});
-G('BtnSvP').addEventListener('click',function(){
-  var nom=G('PNom').value.trim(),mon=parseFloat(G('PMon').value),fec=G('PFec').value;
-  var cuo=parseInt(G('PCuo').value)||null,cuoV=parseFloat(G('PCuoV').value)||null;
-  var dia=parseInt(G('PDia').value)||null,not=G('PNot').value.trim();
-  if(!nom||!mon||mon<=0)return;
-  RF.prest.push({tipo:S.loanT,nombre:nom,monto:mon,fecha:fec||null,cuotas:cuo,cuotaVal:cuoV,dia:dia,nota:not,liquidado:false});
-  addLog('prestamo',(S.loanT==='p'?'Presté a ':'Me prestaron: ')+nom+' '+fQ(mon),S.loanT==='p'?-mon:mon);closeOv('ModP');
-});
-
-// ── MODAL CRÉDITO ─────────────────────────────────────────
-G('BtnNC').addEventListener('click',function(){
-  ['CNom','CObj','CMon','CCuo','CCuoV','CDia','CNot'].forEach(function(id){G(id).value='';});
-  G('CFec').value=new Date().toISOString().split('T')[0];
-  S.creditT='d';G('TcD').className='tt ono';G('TcY').className='tt';
-  openOv('ModC');setTimeout(function(){G('CNom').focus();},150);
-});
-G('ModC').addEventListener('click',function(e){if(e.target===this)closeOv('ModC');});
-G('TcD').addEventListener('click',function(){S.creditT='d';G('TcD').className='tt ono';G('TcY').className='tt';});
-G('TcY').addEventListener('click',function(){S.creditT='y';G('TcY').className='tt onb';G('TcD').className='tt';});
-G('BtnSvC').addEventListener('click',function(){
-  var nom=G('CNom').value.trim(),obj=G('CObj').value.trim(),mon=parseFloat(G('CMon').value),fec=G('CFec').value;
-  var cuo=parseInt(G('CCuo').value)||null,cuoV=parseFloat(G('CCuoV').value)||null;
-  var dia=parseInt(G('CDia').value)||null,not=G('CNot').value.trim();
-  if(!nom||!obj||!mon||mon<=0)return;
-  RF.cred.push({tipo:S.creditT,nombre:nom,objeto:obj,monto:mon,fecha:fec||null,cuotas:cuo,cuotaVal:cuoV,dia:dia,nota:not,liquidado:false});
-  if(S.creditT==='y')addLog('add','Compré a crédito: '+obj+' — '+nom,mon);
-  else addLog('prestamo','Compra recibida: '+obj+' de '+nom,0);
-  closeOv('ModC');
-});
-
-// ── DELEGACIÓN DINÁMICA ───────────────────────────────────
 document.addEventListener('click',function(e){
-  var t=e.target;
-  if(t.classList.contains('al-x')){t.closest('.al-it').remove();return;}
-  if(t.dataset.lf){S.logF=t.dataset.lf;document.querySelectorAll('.lfi').forEach(function(b){b.classList.remove('on');});t.classList.add('on');renderLog();return;}
-  if(t.id==='BtnClearLog'){if(!confirm('¿Limpiar historial?'))return;RF.log.set(null);return;}
-  if(t.dataset.em){if(t.dataset.em==='g'){S.eG=t.dataset.ev;buildEG('EgG',EG,S.eG,'g');}else{S.eI=t.dataset.ev;buildEG('EgI',EI,S.eI,'i');}return;}
-  var el=t;while(el&&el!==document.body&&!el.dataset.a)el=el.parentElement;
-  if(!el||!el.dataset.a)return;
-  var a=el.dataset.a,k=el.dataset.k,uid=AUTH.currentUser?AUTH.currentUser.uid:null;
-  if(!uid&&a!=='sa'&&a!=='na')return;
-  if(a==='tg'){RF.gastos.child(k+'/on').set(el.dataset.v==='1');return;}
-  if(a==='cg'){var cur=(S.gastos[k]&&S.gastos[k].emoji)||EG[0];RF.gastos.child(k+'/emoji').set(EG[(EG.indexOf(cur)+1)%EG.length]);return;}
-  if(a==='dg'){if(!confirm('¿Eliminar este gasto?'))return;addLog('remove','Gasto eliminado',-parseFloat(el.dataset.m));RF.gastos.child(k).remove();delete nids[k];localStorage.setItem('nids',JSON.stringify(nids));return;}
-  if(a==='di'){if(!confirm('¿Eliminar este ingreso?'))return;addLog('ingreso','Ingreso eliminado',-parseFloat(el.dataset.m));RF.ing.child(k).remove();return;}
-  if(a==='ab'){
-    S.abonoKey=k;S.abonoTipo=el.dataset.t;
-    var nomAb=el.dataset.nom,pendAb=parseFloat(el.dataset.pend);
-    G('OvAbonoT').textContent='Abonar — '+nomAb;
-    var objAb=S.abonoTipo==='p'?S.prest[k]:S.cred[k];
-    var sugAb=objAb?Math.min(cuotaReal(objAb),pendAb):0;
-    G('OvAbonoD').textContent=sugAb>0?'Cuota sugerida: '+fQ(sugAb)+' · Pendiente: '+fQ(pendAb):'Pendiente: '+fQ(pendAb);
-    G('InAbono').value=sugAb>0?sugAb.toFixed(2):'';
-    openOv('OvAbono');setTimeout(function(){G('InAbono').focus();G('InAbono').select();},100);return;
-  }
-  if(a==='liq'){
-    if(!confirm('¿Marcar como liquidado?'))return;
-    var tipo=el.dataset.t,pend2=parseFloat(el.dataset.pend);
-    var path=tipo==='p'?'prestamos':'creditos';
-    if(pend2>0)DB.ref('users/'+uid+'/'+path+'/'+k+'/abonos').push({monto:pend2,ts:Date.now()});
-    DB.ref('users/'+uid+'/'+path+'/'+k+'/liquidado').set(true);
-    addLog('prestamo',tipo==='p'?'Préstamo liquidado':'Compra liquidada',0);return;
-  }
-  if(a==='dl'){
-    if(!confirm('¿Eliminar?'))return;
-    DB.ref('users/'+uid+'/'+(el.dataset.t==='p'?'prestamos':'creditos')+'/'+k).remove();return;
-  }
-  if(a==='sa'){S.acctKey=k==='__gen__'?null:k;renderAccts();return;}
-  if(a==='da'){
-    e.stopPropagation();
-    if(!confirm('¿Eliminar esta cuenta?'))return;
-    RF.cuentas.child(k).remove();if(S.acctKey===k)S.acctKey=null;return;
-  }
-  if(a==='na'){
-    S.editAcctKey=null;S.acctEmo='🏦';G('OvCuentaT').textContent='Nueva cuenta';
-    G('InCNom').value='';G('InCBal').value='';
-    document.querySelectorAll('.ae').forEach(function(x){x.classList.toggle('on',x.dataset.ae==='🏦');});
-    openOv('OvCuenta');return;
-  }
-  if(a==='non'){
-    if(!('Notification'in window)){alert('No soportado.');return;}
-    Notification.requestPermission().then(function(p){
-      if(p!=='granted'){alert('Necesitas dar permiso de notificaciones.');return;}
-      var item=S.gastos[k];if(!item||!item.dia){alert('Agrega día de cobro primero.');return;}
-      var h2=new Date();h2.setHours(0,0,0,0);var c2=new Date(h2.getFullYear(),h2.getMonth(),item.dia);if(c2<=h2)c2.setMonth(c2.getMonth()+1);
-      var av=new Date(c2);av.setDate(av.getDate()-1);av.setHours(9,0,0,0);
-      var ts=av.getTime(),diff=ts-Date.now();
-      nids[k]=ts;localStorage.setItem('nids',JSON.stringify(nids));
-      if(diff>0&&diff<172800000)setTimeout(function(){if(nids[k]===ts)new Notification('🔔 '+item.emoji+' '+item.nombre+' se cobra mañana',{body:fQ(item.montoQ)});},diff);
-      renderNotif(Object.values(S.gastos));
-    });return;
-  }
-  if(a==='noff'){delete nids[k];localStorage.setItem('nids',JSON.stringify(nids));renderNotif(Object.values(S.gastos));return;}
-  if(a==='pcnon'){
-    if(!('Notification'in window)){alert('No soportado.');return;}
-    Notification.requestPermission().then(function(p){
-      if(p!=='granted'){alert('Necesitas dar permiso.');return;}
-      var obj2=el.dataset.t==='p'?S.prest[k]:S.cred[k];if(!obj2||!obj2.dia)return;
-      nidsPC[k]=true;localStorage.setItem('nidsPC',JSON.stringify(nidsPC));
-      var h3=new Date();h3.setHours(0,0,0,0);var c3=new Date(h3.getFullYear(),h3.getMonth(),obj2.dia);if(c3<=h3)c3.setMonth(c3.getMonth()+1);
-      var av2=new Date(c3);av2.setDate(av2.getDate()-1);av2.setHours(9,0,0,0);
-      var diff2=av2.getTime()-Date.now();
-      var lbl2=(obj2.objeto||obj2.nombre);
-      if(diff2>0&&diff2<172800000)setTimeout(function(){if(nidsPC[k])new Notification('⏰ Pago mañana — '+lbl2,{body:'Cuota de '+fQ(cuotaReal(obj2))+' vence mañana.'});},diff2);
-      render();
-    });return;
-  }
-  if(a==='pcnoff'){delete nidsPC[k];localStorage.setItem('nidsPC',JSON.stringify(nidsPC));render();return;}
-  if(a==='tpag'){
-    var mes=el.dataset.mes,monto=parseFloat(el.dataset.monto),uid2=AUTH.currentUser?AUTH.currentUser.uid:null;
-    if(!uid2)return;
-    if(!confirm('¿Marcar Q'+monto.toFixed(2)+' como pagado y agregarlo a tu saldo?'))return;
-    DB.ref('users/'+uid2+'/trabajo').once('value',function(snap){
-      var data=snap.val()||{};
-      Object.keys(data).forEach(function(k){
-        if(data[k].mes===mes&&!data[k].pagado){
-          DB.ref('users/'+uid2+'/trabajo/'+k+'/pagado').set(true);
-        }
-      });
-      // Add to balance
-      RF.saldo.once('value',function(s){RF.saldo.set((s.val()||0)+monto);});
-      addLog('ingreso','💼 Sueldo pagado '+mes+': +Q'+monto.toFixed(2),monto);
-      setTimeout(renderTrabajo,500);
-    });
+  var t=e.target.closest('#BtnSvSueldo,#TcQ,#TcU,#BtnDiaTrab,#BtnHorasMan,#BtnHorasExtra');
+  if(!t)return;
+  if(t.id==='BtnSvSueldo'){
+    var v=parseFloat(document.getElementById('TPayH').value);
+    if(!v||v<=0){alert('Ingresa un monto valido por hora.');return;}
+    tPayH=v;localStorage.setItem('tPayH',v);localStorage.setItem('tMoneda',tMoneda);
+    updSueldoInfo();
+    t.textContent='Guardado!';
+    setTimeout(function(){t.textContent='Guardar configuracion';},1500);
     return;
   }
-  if(a==='tdel'){
-    var uid3=AUTH.currentUser?AUTH.currentUser.uid:null; if(!uid3)return;
-    if(!confirm('¿Eliminar este registro?'))return;
-    DB.ref('users/'+uid3+'/trabajo/'+k).remove();
-    setTimeout(renderTrabajo,300);return;
+  if(t.id==='TcQ'){
+    tMoneda='GTQ';
+    t.style.background='linear-gradient(135deg,#d4af37,#b8860b)';t.style.color='#0a0800';
+    var u=document.getElementById('TcU');if(u){u.style.background='none';u.style.color='rgba(212,175,55,.5)';}
+    updSueldoInfo();return;
   }
-});
-
-// ── TASA BANGUAT ──────────────────────────────────────────
-function fetchTasa(){
-  fetch('https://www.banguat.gob.gt/variables/ws/TipoCambio.asmx/TipoCambioDia')
-  .then(function(r){return r.text();})
-  .then(function(xml){
-    var m=xml.match(/<referencia>([^<]+)<\/referencia>/);
-    if(m&&m[1]){var t=parseFloat(m[1]);if(!isNaN(t)&&t>5){S.tasa=t;G('fxVal').textContent='Q'+t.toFixed(4);localStorage.setItem('tasa',t);return;}}
-    throw new Error('parse');
-  })
-  .catch(function(){
-    fetch('https://api.frankfurter.app/latest?from=USD&to=GTQ')
-    .then(function(r){return r.json();})
-    .then(function(d){S.tasa=d.rates.GTQ;G('fxVal').textContent='Q'+S.tasa.toFixed(2);localStorage.setItem('tasa',S.tasa);})
-    .catch(function(){S.tasa=parseFloat(localStorage.getItem('tasa'))||7.75;G('fxVal').textContent='Q'+S.tasa.toFixed(2);});
-  });
-}
-setInterval(fetchTasa,6*60*60*1000);
-
-// ── ANIMACIONES ───────────────────────────────────────────
-function addPress(sel,cls){
-  document.querySelectorAll(sel).forEach(function(el){
-    el.addEventListener('touchstart',function(){this.classList.add(cls);},{passive:true});
-    el.addEventListener('touchend',function(){var s=this;setTimeout(function(){s.classList.remove(cls);},150);},{passive:true});
-    el.addEventListener('mousedown',function(){this.classList.add(cls);});
-    el.addEventListener('mouseup',function(){var s=this;setTimeout(function(){s.classList.remove(cls);},150);});
-  });
-}
-function addRipple(e){
-  var el=e.currentTarget,r=document.createElement('span'),rect=el.getBoundingClientRect();
-  var x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-  var y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
-  r.style.cssText='position:absolute;border-radius:50%;background:rgba(212,175,55,.25);pointer-events:none;transform:scale(0);animation:ripple .5s linear;left:'+(x-20)+'px;top:'+(y-20)+'px;width:40px;height:40px;z-index:9';
-  el.style.position='relative';el.style.overflow='hidden';el.appendChild(r);
-  setTimeout(function(){r.remove();},500);
-}
-function initAnims(){
-  addPress('.abtn','press');addPress('.btn-n','press');addPress('.btn-sv','press');
-  addPress('.b-ok','press');addPress('.chip','press');addPress('.tab','press-soft');
-  addPress('.btn-ab','press');addPress('.btn-liq','press');addPress('.lfi','press-soft');
-  addPress('.ac','press-soft');addPress('.tog','press');addPress('.b-cancel','press-soft');
-  ['BtnIngRap','BtnEditBase','BtnNG','BtnNI','BtnNP','BtnNC','BtnSvG','BtnSvI','BtnSvP','BtnSvC','BtnOkSaldo','BtnOkIng','BtnOkAbono','BtnOkCuenta','LBtn'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el){el.addEventListener('touchstart',addRipple,{passive:true});el.addEventListener('mousedown',addRipple);}
-  });
-}
-var _lastHero='';
-function pulseHero(){
-  var el=G('heroVal');if(!el)return;
-  var v=el.textContent;
-  if(v!==_lastHero&&_lastHero!==''){
-    el.style.transition='text-shadow .3s';
-    el.style.textShadow='0 0 40px rgba(212,175,55,1),0 0 80px rgba(212,175,55,.7)';
-    setTimeout(function(){el.style.textShadow='0 0 20px rgba(212,175,55,.7),0 0 60px rgba(212,175,55,.3)';},400);
+  if(t.id==='TcU'){
+    tMoneda='USD';
+    t.style.background='linear-gradient(135deg,#d4af37,#b8860b)';t.style.color='#0a0800';
+    var q2=document.getElementById('TcQ');if(q2){q2.style.background='none';q2.style.color='rgba(212,175,55,.5)';}
+    updSueldoInfo();return;
   }
-  _lastHero=v;
+  if(t.id==='BtnDiaTrab'){
+    if(!tPayH){alert('Primero configura tu pago por hora.');return;}
+    var qd=tPayHInQ()*8;
+    if(!confirm('Dia completo 8h - Q'+qd.toFixed(2)+' - Registrar?'))return;
+    registrarDia(8,false,0);return;
+  }
+  if(t.id==='BtnHorasMan'){
+    if(!tPayH){alert('Primero configura tu pago por hora.');return;}
+    var hm=parseFloat(prompt('Cuantas horas trabajaste hoy?'));
+    if(!hm||hm<=0||hm>24){alert('Numero de horas invalido.');return;}
+    var qm=tPayHInQ()*hm;
+    if(!confirm(hm+' horas - Q'+qm.toFixed(2)+' - Registrar?'))return;
+    registrarDia(hm,false,0);return;
+  }
+  if(t.id==='BtnHorasExtra'){
+    var he=parseFloat(prompt('Cuantas horas extras?'));
+    if(!he||he<=0){alert('Numero invalido.');return;}
+    var pe=parseFloat(prompt('Cuanto valen las '+he+' horas extras en Q? (total)'));
+    if(!pe||pe<=0){alert('Monto invalido.');return;}
+    if(!confirm(he+'h extras - Q'+pe.toFixed(2)+' - Registrar?'))return;
+    registrarDia(he,true,pe);return;
+  }
+},true);
+function renderTrabajo(){
+  updSueldoInfo();
+  var uid=AUTH.currentUser?AUTH.currentUser.uid:null;if(!uid)return;
+  DB.ref('users/'+uid+'/trabajo').once('value',function(snap){
+    var data=snap.val()||{};
+    var arr=Object.keys(data).map(function(k){return Object.assign({},data[k],{fbKey:k});});
+    arr.sort(function(a,b){return b.ts-a.ts;});
+    var byMes={};
+    arr.forEach(function(d){if(!byMes[d.mes])byMes[d.mes]=[];byMes[d.mes].push(d);});
+    var meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var rh='';
+    Object.keys(byMes).sort().reverse().forEach(function(m){
+      var dias=byMes[m];
+      var totalQ=dias.reduce(function(s,d){return s+d.monto;},0);
+      var pagoQ=dias.filter(function(d){return d.pagado;}).reduce(function(s,d){return s+d.monto;},0);
+      var pendQ=totalQ-pagoQ;
+      var parts=m.split('-');
+      var mesNom=meses[parseInt(parts[1])-1]+' '+parts[0];
+      var diasCount=dias.filter(function(d){return !d.esExtra;}).length;
+      var extrasCount=dias.filter(function(d){return d.esExtra;}).length;
+      rh+='<div style="background:var(--card);border:1px solid rgba(212,175,55,.15);border-radius:12px;padding:13px;margin-bottom:9px">';
+      rh+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:13px;font-weight:800;color:var(--gold2)">'+mesNom+'</span><span style="font-size:16px;font-weight:800;color:var(--gold)">Q'+totalQ.toFixed(2)+'</span></div>';
+      rh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">';
+      rh+='<div style="background:rgba(212,175,55,.06);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--gold)">'+diasCount+'</div><div style="font-size:10px;color:var(--sub)">Dias trabajados</div></div>';
+      rh+='<div style="background:rgba(212,175,55,.06);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:#ff8888">'+extrasCount+'</div><div style="font-size:10px;color:var(--sub)">Con extras</div></div>';
+      rh+='</div>';
+      rh+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid rgba(212,175,55,.08)"><span style="font-size:11px;color:var(--sub)">Ya cobrado</span><span style="font-size:12px;font-weight:700;color:var(--gold)">Q'+pagoQ.toFixed(2)+'</span></div>';
+      rh+='<div style="display:flex;justify-content:space-between;padding:5px 0"><span style="font-size:11px;color:var(--sub)">Pendiente</span><span style="font-size:12px;font-weight:700;color:var(--red2)">Q'+pendQ.toFixed(2)+'</span></div>';
+      if(pendQ>0){rh+='<button data-a="tpag" data-mes="'+m+'" data-monto="'+pendQ.toFixed(2)+'" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:8px;padding:10px;font-family:Inter,sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-top:8px">Cobrar sueldo - Q'+pendQ.toFixed(2)+'</button>';}
+      rh+='</div>';
+    });
+    var resEl=document.getElementById('TResumen');
+    if(resEl)resEl.innerHTML=rh||'<div class="empty">Sin registros aun.</div>';
+    var lh='';
+    arr.slice(0,20).forEach(function(d){
+      var parts=d.mes.split('-');var mesNom=meses[parseInt(parts[1])-1]+' '+parts[0];
+      lh+='<div class="it '+(d.pagado?'off':'ig')+'">';
+      lh+='<div class="it-ico gb">'+(d.esExtra?'🔥':d.horas===8?'☀️':'⏱️')+'</div>';
+      lh+='<div class="it-body"><div class="it-name">'+d.desc+'</div><div class="it-meta">'+mesNom+' | '+(d.pagado?'Cobrado':'Pendiente')+'</div></div>';
+      lh+='<div class="it-r"><div class="it-q g">Q'+d.monto.toFixed(2)+'</div>';
+      lh+='<button class="xb" data-a="tdel" data-k="'+d.fbKey+'">x</button></div></div>';
+    });
+    var lEl=document.getElementById('TLista');
+    if(lEl)lEl.innerHTML=lh||'<div class="empty">Sin dias registrados.</div>';
+  });
 }
-setTimeout(initAnims,200);
-</script>
+
+// ── TASA BANGUAT ────────────────────────────────────────── function fetchTasa(){   fetch('https://www.banguat.gob.gt/variables/ws/TipoCambio.asmx/TipoCambioDia')   .then(function(r){return r.text();})   .then(function(xml){     var m=xml.match(/<referencia>([^<]+)<\/referencia>/);     if(m&&m[1]){var t=parseFloat(m[1]);if(!isNaN(t)&&t>5){S.tasa=t;G('fxVal').textContent='Q'+t.toFixed(4);localStorage.setItem('tasa',t);return;}}     throw new Error('parse');   })   .catch(function(){     fetch('https://api.frankfurter.app/latest?from=USD&to=GTQ')     .then(function(r){return r.json();})     .then(function(d){S.tasa=d.rates.GTQ;G('fxVal').textContent='Q'+S.tasa.toFixed(2);localStorage.setItem('tasa',S.tasa);})     .catch(function(){S.tasa=parseFloat(localStorage.getItem('tasa'))||7.75;G('fxVal').textContent='Q'+S.tasa.toFixed(2);});   }); } setInterval(fetchTasa,6*60*60*1000);  // ── ANIMACIONES ─────────────────────────────────────────── function addPress(sel,cls){   document.querySelectorAll(sel).forEach(function(el){     el.addEventListener('touchstart',function(){this.classList.add(cls);},{passive:true});     el.addEventListener('touchend',function(){var s=this;setTimeout(function(){s.classList.remove(cls);},150);},{passive:true});     el.addEventListener('mousedown',function(){this.classList.add(cls);});     el.addEventListener('mouseup',function(){var s=this;setTimeout(function(){s.classList.remove(cls);},150);});   }); } function addRipple(e){   var el=e.currentTarget,r=document.createElement('span'),rect=el.getBoundingClientRect();   var x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;   var y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;   r.style.cssText='position:absolute;border-radius:50%;background:rgba(212,175,55,.25);pointer-events:none;transform:scale(0);animation:ripple .5s linear;left:'+(x-20)+'px;top:'+(y-20)+'px;width:40px;height:40px;z-index:9';   el.style.position='relative';el.style.overflow='hidden';el.appendChild(r);   setTimeout(function(){r.remove();},500); } function initAnims(){   addPress('.abtn','press');addPress('.btn-n','press');addPress('.btn-sv','press');   addPress('.b-ok','press');addPress('.chip','press');addPress('.tab','press-soft');   addPress('.btn-ab','press');addPress('.btn-liq','press');addPress('.lfi','press-soft');   addPress('.ac','press-soft');addPress('.tog','press');addPress('.b-cancel','press-soft');   ['BtnIngRap','BtnEditBase','BtnNG','BtnNI','BtnNP','BtnNC','BtnSvG','BtnSvI','BtnSvP','BtnSvC','BtnOkSaldo','BtnOkIng','BtnOkAbono','BtnOkCuenta','LBtn'].forEach(function(id){     var el=document.getElementById(id);     if(el){el.addEventListener('touchstart',addRipple,{passive:true});el.addEventListener('mousedown',addRipple);}   }); } var _lastHero=''; function pulseHero(){   var el=G('heroVal');if(!el)return;   var v=el.textContent;   if(v!==_lastHero&&_lastHero!==''){     el.style.transition='text-shadow .3s';     el.style.textShadow='0 0 40px rgba(212,175,55,1),0 0 80px rgba(212,175,55,.7)';     setTimeout(function(){el.style.textShadow='0 0 20px rgba(212,175,55,.7),0 0 60px rgba(212,175,55,.3)';},400);   }   _lastHero=v; } setTimeout(initAnims,200); </script>
 </body>
 </html>
