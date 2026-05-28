@@ -717,7 +717,7 @@ AUTH.onAuthStateChanged(function(user){
     if(nm)nm.textContent=user.displayName||user.email.split('@')[0]||'Usuario';
     if(em)em.textContent=user.email||'';
     if(av){if(user.photoURL)av.src=user.photoURL;else av.style.display='none';}
-    DB.ref('usuarios/'+user.uid).update({ultimoLogin:Date.now(),email:user.email});
+    // user info saved in users/ path below
     initRF(user.uid);detachAll();startListeners();fetchTasa();
     // Show currency pref on first login
     var monPref=localStorage.getItem('monPref_'+user.uid);
@@ -761,7 +761,7 @@ G('LBtnReg').addEventListener('click',function(){
   AUTH.createUserWithEmailAndPassword(email,pass).then(function(cred){
     return cred.user.updateProfile({displayName:nom});
   }).then(function(){
-    DB.ref('usuarios/'+AUTH.currentUser.uid).set({nombre:nom,email:email,creado:Date.now(),plan:'free',activo:true});
+    DB.ref('users/'+AUTH.currentUser.uid+'/perfil').set({nombre:nom,email:email,creado:Date.now(),plan:'free'});
   }).catch(function(err){
     var b=G('LBtnReg');if(b){b.textContent='Crear cuenta';b.style.opacity='1';b.style.pointerEvents='auto';}
     var msgs={'auth/email-already-in-use':'Ya existe una cuenta con ese email.','auth/weak-password':'Contraseña muy débil.'};
@@ -1203,32 +1203,27 @@ G('MonedaGTQ').addEventListener('click',function(){window.setMonedaPref('GTQ');}
 G('MonedaUSD').addEventListener('click',function(){window.setMonedaPref('USD');});
 
 function fetchTasa(){
-  // Try Banguat SOAP (same rate Banco Industrial uses as reference)
-  fetch('https://www.banguat.gob.gt/variables/ws/TipoCambio.asmx/TipoCambioDia',{cache:'no-store'})
-  .then(function(r){return r.text();})
-  .then(function(xml){
-    var m=xml.match(/<referencia>([^<]+)<\/referencia>/);
-    if(m&&m[1]){
-      var t=parseFloat(m[1]);
-      if(!isNaN(t)&&t>5){
-        S.tasa=t;
-        var el=G('fxVal');
-        if(el)el.textContent='Q'+t.toFixed(4)+' BI';
-        localStorage.setItem('tasa',t);
-        localStorage.setItem('tasaFecha',new Date().toLocaleDateString('es-GT'));
-        return;
-      }
-    }
-    throw new Error('parse');
-  }).catch(function(){
-    // Fallback frankfurter
-    fetch('https://api.frankfurter.app/latest?from=USD&to=GTQ',{cache:'no-store'})
-    .then(function(r){return r.json();})
-    .then(function(d){
+  // Use ExchangeRate-API - fully CORS compatible
+  fetch('https://open.er-api.com/v6/latest/USD')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.rates&&d.rates.GTQ){
       S.tasa=d.rates.GTQ;
       var el=G('fxVal');
-      if(el)el.textContent='Q'+S.tasa.toFixed(2)+' ref';
+      if(el)el.textContent='Q'+S.tasa.toFixed(2);
       localStorage.setItem('tasa',S.tasa);
+    } else throw new Error('no GTQ');
+  }).catch(function(){
+    // Fallback: exchangerate.host (also CORS compatible)
+    fetch('https://api.exchangerate.host/latest?base=USD&symbols=GTQ')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.rates&&d.rates.GTQ){
+        S.tasa=d.rates.GTQ;
+        var el=G('fxVal');
+        if(el)el.textContent='Q'+S.tasa.toFixed(2);
+        localStorage.setItem('tasa',S.tasa);
+      } else throw new Error('no data');
     }).catch(function(){
       S.tasa=parseFloat(localStorage.getItem('tasa'))||7.75;
       var el=G('fxVal');
@@ -1237,7 +1232,7 @@ function fetchTasa(){
   });
 }
 fetchTasa();
-setInterval(fetchTasa,3*3600000); // refresh every 3 hours
+setInterval(fetchTasa,3*3600000);
 
 // DELEGACIÓN GLOBAL
 document.addEventListener('click',function(e){
