@@ -630,13 +630,37 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px;margin-top:10px">Monto total en Q (solo extras)</label>
       <input class="b-inp" type="number" id="TrabMonto" placeholder="0.00" inputmode="decimal" style="font-size:22px;display:none"/>
     </div>
-    <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Mes (dejar vacío = mes actual)</label>
-    <input class="b-inp" id="TrabMes" placeholder="2025-06" style="font-size:18px"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div>
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Fecha exacta</label>
+        <input class="b-inp" type="date" id="TrabFecha" style="font-size:14px"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Período (mes)</label>
+        <input class="b-inp" id="TrabMes" placeholder="2025-06" style="font-size:14px"/>
+      </div>
+    </div>
     <div id="OvTrabInfo" style="font-size:12px;color:rgba(212,175,55,.6);margin-top:8px;text-align:center"></div>
     <div class="b-row">
       <button class="b-cancel" id="BtnTrabCancel">Cancelar</button>
       <button class="b-ok" id="BtnTrabOk">Registrar</button>
     </div>
+  </div>
+</div>
+<!-- CURRENCY PREF MODAL -->
+<div class="bov" id="OvMoneda" style="z-index:150">
+  <div class="bbox">
+    <h2>💱 Moneda principal</h2>
+    <p>¿En qué moneda manejas tu dinero?</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <button id="MonedaGTQ" style="background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:12px;padding:18px 10px;font-family:Inter,sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 14px rgba(212,175,55,.3)">
+        🇬🇹 Quetzales<br><span style="font-size:11px;font-weight:600;opacity:.7">GTQ</span>
+      </button>
+      <button id="MonedaUSD" style="background:var(--card);border:1.5px solid rgba(212,175,55,.25);color:var(--gold2);border-radius:12px;padding:18px 10px;font-family:Inter,sans-serif;font-size:15px;font-weight:700;cursor:pointer">
+        🇺🇸 Dólares<br><span style="font-size:11px;font-weight:600;opacity:.6">USD</span>
+      </button>
+    </div>
+    <p style="font-size:11px;color:var(--sub);text-align:center">Puedes cambiarlo después en Ajustes</p>
   </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -695,6 +719,15 @@ AUTH.onAuthStateChanged(function(user){
     if(av){if(user.photoURL)av.src=user.photoURL;else av.style.display='none';}
     DB.ref('usuarios/'+user.uid).update({ultimoLogin:Date.now(),email:user.email});
     initRF(user.uid);detachAll();startListeners();fetchTasa();
+    // Show currency pref on first login
+    var monPref=localStorage.getItem('monPref_'+user.uid);
+    if(!monPref){
+      setTimeout(function(){
+        var ov=G('OvMoneda');if(ov)ov.classList.add('on');
+      },800);
+    } else {
+      S.monPref=monPref;
+    }
     setTimeout(initAnims,300);
   } else {
     ls.style.display='flex';
@@ -771,7 +804,15 @@ function render(){
   var tI=iA.filter(function(i){return i.sumar!=='no';}).reduce(function(s,i){return s+i.monto;},0);
   var real=S.base+tI-tG;
   var hv=G('heroVal');
-  if(hv){hv.textContent=(real<0?'−':'')+fQ(real);hv.className='h-val'+(real<0?' neg':real<(S.base+tI)*0.1&&(S.base+tI)>0?' tight':'');}
+  if(hv){
+    if(S.monPref==='USD'){
+      var realUSD=real/S.tasa;
+      hv.textContent=(real<0?'−':'')+'$ '+Math.abs(realUSD).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    } else {
+      hv.textContent=(real<0?'−':'')+fQ(real);
+    }
+    hv.className='h-val'+(real<0?' neg':real<(S.base+tI)*0.1&&(S.base+tI)>0?' tight':'');
+  }
   if(G('hBase'))G('hBase').textContent=fQ(S.base);
   if(G('hIng'))G('hIng').textContent=fQ(tI);
   if(G('hGas'))G('hGas').textContent=fQ(tG);
@@ -1037,12 +1078,19 @@ function abrirModalTrabajo(tipo){
   setTimeout(function(){if(tipo==='dia'&&mesEl){mesEl.focus();}else if(horasEl){horasEl.focus();}},150);
 }
 
-function registrarDia(horas,esExtra,pagoExtra,mes){
+function registrarDia(horas,esExtra,pagoExtra,mes,fechaExacta){
   if(!mes||mes.length!==7)mes=mesActual();
   var q=esExtra?pagoExtra:tPayHInQ()*horas;
-  var desc=(esExtra?horas+'h extra':horas+'h trabajadas')+' - Q'+q.toFixed(2);
+  var qStr=fQ(q);
+  var usd=esExtra?parseFloat((pagoExtra/S.tasa).toFixed(2)):tPayH&&tMoneda==='USD'?tPayH*horas:parseFloat((q/S.tasa).toFixed(2));
+  var desc=(esExtra?horas+'h extra':horas+'h trabajadas')+' - '+qStr+' / $'+usd.toFixed(2);
   var uid=AUTH.currentUser?AUTH.currentUser.uid:null;if(!uid)return;
-  DB.ref('users/'+uid+'/trabajo').push({horas:horas,monto:q,mes:mes,desc:desc,ts:Date.now(),pagado:false,esExtra:esExtra||false});
+  var fecha=fechaExacta||new Date().toISOString().split('T')[0];
+  DB.ref('users/'+uid+'/trabajo').push({
+    horas:horas,monto:q,montoUSD:usd,mes:mes,
+    fecha:fecha,desc:desc,ts:Date.now(),
+    pagado:false,esExtra:esExtra||false
+  });
   addLog('saldo',desc,0);
   setTimeout(renderTrabajo,500);
 }
@@ -1055,23 +1103,26 @@ G('BtnTrabOk').addEventListener('click',function(){
   var tipo=_trabPending.tipo;
   if(tipo==='dia'){
     var qd=tPayHInQ()*8;
+    var fd=G('TrabFecha')?G('TrabFecha').value:'';
     G('OvTrabInfo').textContent='Registrando '+fQ(qd)+'...';
-    registrarDia(8,false,0,mes);
+    registrarDia(8,false,0,mes,fd);
     setTimeout(function(){G('OvTrabajo').classList.remove('on');},500);
   } else if(tipo==='manual'){
     var hm=parseFloat(G('TrabHoras').value);
     if(!hm||hm<=0||hm>24){G('OvTrabInfo').textContent='Ingresa horas validas (1-24)';return;}
     var qm=tPayHInQ()*hm;
+    var fd2=G('TrabFecha')?G('TrabFecha').value:'';
     G('OvTrabInfo').textContent='Registrando '+fQ(qm)+'...';
-    registrarDia(hm,false,0,mes);
+    registrarDia(hm,false,0,mes,fd2);
     setTimeout(function(){G('OvTrabajo').classList.remove('on');},500);
   } else if(tipo==='extra'){
     var he=parseFloat(G('TrabHoras').value);
     var pe=parseFloat(G('TrabMonto').value);
     if(!he||he<=0){G('OvTrabInfo').textContent='Ingresa las horas extras';return;}
     if(!pe||pe<=0){G('OvTrabInfo').textContent='Ingresa el monto total en Q';return;}
+    var fd3=G('TrabFecha')?G('TrabFecha').value:'';
     G('OvTrabInfo').textContent='Registrando '+fQ(pe)+'...';
-    registrarDia(he,true,pe,mes);
+    registrarDia(he,true,pe,mes,fd3);
     setTimeout(function(){G('OvTrabajo').classList.remove('on');},500);
   }
 });
@@ -1109,21 +1160,84 @@ function renderTrabajo(){
     });
     var resEl=G('TResumen');if(resEl)resEl.innerHTML=rh||'<div class="empty">Sin registros aun.</div>';
     var lh='';
-    arr.slice(0,15).forEach(function(d){
+    arr.slice(0,30).forEach(function(d){
       var parts=d.mes.split('-'),mesNom=meses[parseInt(parts[1])-1]+' '+parts[0];
-      lh+='<div class="it '+(d.pagado?'off':'ig')+'"><div class="it-ico gb">'+(d.esExtra?'🔥':d.horas===8?'☀️':'⏱️')+'</div>';
-      lh+='<div class="it-body"><div class="it-name">'+d.desc+'</div><div class="it-meta">'+mesNom+' | '+(d.pagado?'Cobrado':'Pendiente')+'</div></div>';
-      lh+='<div class="it-r"><div class="it-q g">Q'+d.monto.toFixed(2)+'</div><button class="xb" data-a="tdel" data-k="'+d.fbKey+'">✕</button></div></div>';
+      var fechaStr='';
+      if(d.fecha){
+        var fd=new Date(d.fecha+'T12:00');
+        fechaStr=fd.getDate()+' '+meses[fd.getMonth()].slice(0,3);
+      }
+      var usdStr=d.montoUSD?'$'+d.montoUSD.toFixed(2):'$'+(d.monto/S.tasa).toFixed(2);
+      lh+='<div class="it '+(d.pagado?'off':'ig')+'">';
+      lh+='<div class="it-ico gb">'+(d.esExtra?'🔥':d.horas===8?'☀️':'⏱️')+'</div>';
+      lh+='<div class="it-body">';
+      lh+='<div class="it-name">'+(fechaStr?'<strong>'+fechaStr+'</strong> · ':'')+d.horas+'h'+(d.esExtra?' extra':'')+'</div>';
+      lh+='<div class="it-meta">'+mesNom+' · '+(d.pagado?'✅ Cobrado':'⏳ Pendiente')+'</div>';
+      lh+='</div>';
+      lh+='<div class="it-r" style="flex-direction:column;align-items:flex-end;gap:2px">';
+      lh+='<div class="it-q g">Q'+d.monto.toFixed(2)+'</div>';
+      lh+='<div style="font-size:10px;color:var(--sub)">'+usdStr+'</div>';
+      lh+='<button class="xb" data-a="tdel" data-k="'+d.fbKey+'">✕</button>';
+      lh+='</div></div>';
     });
     var lEl=G('TLista');if(lEl)lEl.innerHTML=lh||'<div class="empty">Sin dias registrados.</div>';
   });
 }
 
 // TASA BANGUAT
+
+// ── MONEDA PRINCIPAL ────────────────────────────────────────
+S.monPref = localStorage.getItem('monPref_'+(AUTH.currentUser?AUTH.currentUser.uid:''))||'GTQ';
+
+window.setMonedaPref = function(mon){
+  var uid=AUTH.currentUser?AUTH.currentUser.uid:null;
+  S.monPref=mon;
+  if(uid)localStorage.setItem('monPref_'+uid,mon);
+  var ov=G('OvMoneda');if(ov)ov.classList.remove('on');
+  var info=G('MonPrefInfo');
+  if(info)info.textContent='Moneda actual: '+(mon==='USD'?'Dolares (USD)':'Quetzales (GTQ)');
+  render();
+};
+
+G('MonedaGTQ').addEventListener('click',function(){window.setMonedaPref('GTQ');});
+G('MonedaUSD').addEventListener('click',function(){window.setMonedaPref('USD');});
+
 function fetchTasa(){
-  fetch('https://www.banguat.gob.gt/variables/ws/TipoCambio.asmx/TipoCambioDia').then(function(r){return r.text();}).then(function(xml){var m=xml.match(/<referencia>([^<]+)<\/referencia>/);if(m&&m[1]){var t=parseFloat(m[1]);if(!isNaN(t)&&t>5){S.tasa=t;if(G('fxVal'))G('fxVal').textContent='Q'+t.toFixed(4);localStorage.setItem('tasa',t);return;}}throw new Error('parse');}).catch(function(){fetch('https://api.frankfurter.app/latest?from=USD&to=GTQ').then(function(r){return r.json();}).then(function(d){S.tasa=d.rates.GTQ;if(G('fxVal'))G('fxVal').textContent='Q'+S.tasa.toFixed(2);localStorage.setItem('tasa',S.tasa);}).catch(function(){S.tasa=parseFloat(localStorage.getItem('tasa'))||7.75;if(G('fxVal'))G('fxVal').textContent='Q'+S.tasa.toFixed(2);});});
+  // Try Banguat SOAP (same rate Banco Industrial uses as reference)
+  fetch('https://www.banguat.gob.gt/variables/ws/TipoCambio.asmx/TipoCambioDia',{cache:'no-store'})
+  .then(function(r){return r.text();})
+  .then(function(xml){
+    var m=xml.match(/<referencia>([^<]+)<\/referencia>/);
+    if(m&&m[1]){
+      var t=parseFloat(m[1]);
+      if(!isNaN(t)&&t>5){
+        S.tasa=t;
+        var el=G('fxVal');
+        if(el)el.textContent='Q'+t.toFixed(4)+' BI';
+        localStorage.setItem('tasa',t);
+        localStorage.setItem('tasaFecha',new Date().toLocaleDateString('es-GT'));
+        return;
+      }
+    }
+    throw new Error('parse');
+  }).catch(function(){
+    // Fallback frankfurter
+    fetch('https://api.frankfurter.app/latest?from=USD&to=GTQ',{cache:'no-store'})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      S.tasa=d.rates.GTQ;
+      var el=G('fxVal');
+      if(el)el.textContent='Q'+S.tasa.toFixed(2)+' ref';
+      localStorage.setItem('tasa',S.tasa);
+    }).catch(function(){
+      S.tasa=parseFloat(localStorage.getItem('tasa'))||7.75;
+      var el=G('fxVal');
+      if(el)el.textContent='Q'+S.tasa.toFixed(2)+' cache';
+    });
+  });
 }
-setInterval(fetchTasa,6*3600000);
+fetchTasa();
+setInterval(fetchTasa,3*3600000); // refresh every 3 hours
 
 // DELEGACIÓN GLOBAL
 document.addEventListener('click',function(e){
