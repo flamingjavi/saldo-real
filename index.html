@@ -25,7 +25,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 /* HEADER */
 .hdr{padding:calc(env(safe-area-inset-top)+14px) 0 0}
 .hdr-row{display:flex;align-items:center;justify-content:space-between}
-.brand-name{font-size:20px;font-weight:800;background:linear-gradient(135deg,#d4af37,#ff2222);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(212,175,55,.4));letter-spacing:-.5px}
+.brand-name{font-size:20px;font-weight:800;background:linear-gradient(135deg,#00ff88,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(212,175,55,.4));letter-spacing:-.5px}
 .brand-by{font-size:10px;color:var(--sub);font-weight:600;letter-spacing:.5px;margin-top:1px}
 .pills{display:flex;gap:6px}
 .pill{display:flex;align-items:center;gap:4px;border-radius:20px;padding:4px 9px;font-size:11px;font-weight:600}
@@ -54,7 +54,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 .ac{flex-shrink:0;width:115px;background:rgba(255,255,255,.04);border:1.5px solid rgba(212,175,55,.15);border-radius:11px;padding:10px;cursor:pointer;position:relative;transition:border-color .2s,box-shadow .2s}
 .ac.sel{border-color:var(--gold);background:rgba(212,175,55,.08);box-shadow:0 0 14px rgba(212,175,55,.25)}
 .ac-ico{font-size:17px;margin-bottom:3px}
-.ac-nom{font-size:11px;font-weight:600;color:rgba(0,255,136,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-nom{font-size:11px;font-weight:600;color:rgba(0,255,136,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ac-bal{font-size:16px;font-weight:700;color:var(--gold2);margin-top:1px}
 .ac-del{position:absolute;top:4px;right:4px;background:rgba(255,34,34,.15);border:none;border-radius:50%;width:17px;height:17px;font-size:9px;color:var(--red);cursor:pointer;display:grid;place-items:center;line-height:1}
 .ac-add{flex-shrink:0;width:80px;background:transparent;border:1.5px dashed rgba(212,175,55,.2);border-radius:11px;padding:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
@@ -128,9 +128,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 .ls{border-radius:11px;padding:11px}
 .ls.r{background:var(--rbg);border:1px solid var(--rbr)}.ls.g{background:var(--gbg);border:1px solid var(--gbr)}.ls.o{background:var(--obg);border:1px solid var(--obr)}
 .ls-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.ls.r .ls-l{color:var(--red)}.ls.g .ls-l{color:var(--gold)}.ls.o .ls-l{color:var(--org)}
+.ls.r .ls-l{color:var(--red)}.ls.g .ls-l{color:var(--grn)}.ls.o .ls-l{color:var(--org)}
 .ls-v{font-size:16px;font-weight:700}
-.ls.r .ls-v{color:var(--red)}.ls.g .ls-v{color:var(--gold)}.ls.o .ls-v{color:var(--org)}
+.ls.r .ls-v{color:var(--red)}.ls.g .ls-v{color:var(--grn)}.ls.o .ls-v{color:var(--org)}
 .ls-s{font-size:10px;color:var(--sub);margin-top:1px}
 .divider{height:1px;background:rgba(212,175,55,.1);margin:14px 0 11px}
 
@@ -186,7 +186,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 .n-info{font-size:12px;color:var(--sub);margin-top:10px;line-height:1.6;padding:10px;background:var(--card);border-radius:9px;border:1px solid rgba(212,175,55,.1)}
 
 /* RESUMEN MENSUAL */
-.rm-card{background:var(--card);border:1px solid rgba(212,175,55,.15);border-radius:12px;padding:14px;margin-bottom:8px}
+.rm-card{background:var(--card);border:1px solid rgba(0,255,136,.1);border-radius:12px;padding:14px;margin-bottom:8px}
 .rm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .rm-title{font-size:13px;font-weight:700;color:var(--grn2)}
 .rm-total{font-size:18px;font-weight:800;color:var(--gold2);text-shadow:0 0 10px rgba(212,175,55,.4)}
@@ -276,7 +276,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 <div id="LS" style="display:flex;position:fixed;inset:0;z-index:200;background:radial-gradient(ellipse at center,#051a10 0%,#050a08 50%,#020805 100%);flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto">
   <div style="text-align:center;max-width:340px;width:100%">
     <div style="font-size:48px;margin-bottom:10px">💰</div>
-    <div style="font-size:26px;font-weight:800;background:linear-gradient(135deg,#d4af37,#ff2222);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:2px">Wallet GT</div>
+    <div style="font-size:26px;font-weight:800;background:linear-gradient(135deg,#00ff88,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:2px">Wallet GT</div>
     <div style="font-size:11px;color:#7a6a3a;margin-bottom:22px">by FlamingJavi</div>
     <div style="display:flex;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:3px;margin-bottom:16px">
       <button id="LTabLogin" onclick="switchAuthTab('login')" style="flex:1;background:linear-gradient(135deg,#d4af37,#b8860b);color:#0a0800;border:none;border-radius:7px;padding:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer">Iniciar sesión</button>
@@ -356,9 +356,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
   <div class="h-acct"><span class="h-acct-l">Cuenta activa</span><span class="h-acct-v" id="acctNm">General</span></div>
 </div>
 
-<div class="arow">
-  <button class="abtn abtn-g" id="BtnIngRap">＋ Ingreso</button>
-  <button class="abtn abtn-s" id="BtnEditBase">💵 Editar saldo</button>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+  <button class="abtn abtn-g" id="BtnIngRap" style="grid-column:1/-1">＋ Agregar ingreso</button>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+  <button class="abtn abtn-s" id="BtnEditBase">💵 Saldo base</button>
+  <button class="abtn abtn-s" id="BtnNGShort">➕ Nuevo gasto</button>
 </div>
 
 <div class="alerts" id="alertBox"></div>
@@ -368,7 +371,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
   <button class="tab" id="TabI">Ingresos</button>
   <button class="tab" id="TabP">Préstamos</button>
   <button class="tab" id="TabH">Historial</button>
-  <button class="tab" id="TabT">💼 Trabajo</button>
+  <button class="tab" id="TabT">💼</button>
   <button class="tab" id="TabA">🔔<span id="alertBadge" style="display:none;background:var(--red);color:#fff;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px;vertical-align:middle;margin-left:2px">!</span></button>
 </div>
 
@@ -997,6 +1000,7 @@ function renderResumen(){
 // TABS
 function setTab(vid,btn){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});var vEl=G(vid),bEl=btn;if(vEl)vEl.classList.add('on');if(bEl)bEl.classList.add('on');}
 G('TabG').addEventListener('click',function(){setTab('VG',this);});
+G('BtnNGShort').addEventListener('click',function(){G('BtnNG').click();setTab('VG',G('TabG'));});
 G('TabI').addEventListener('click',function(){setTab('VI',this);});
 G('TabP').addEventListener('click',function(){setTab('VP',this);});
 G('TabH').addEventListener('click',function(){setTab('VH',this);});
@@ -1007,7 +1011,14 @@ G('TabA').addEventListener('click',function(){setTab('VA',this);});
 G('BtnIngRap').addEventListener('click',function(){if(G('InIng'))G('InIng').value='';openOv('OvIng');setTimeout(function(){if(G('InIng'))G('InIng').focus();},100);});
 G('BtnCIng').addEventListener('click',function(){closeOv('OvIng');});
 G('OvIng').addEventListener('click',function(e){if(e.target===this)closeOv('OvIng');});
-G('BtnOkIng').addEventListener('click',function(){var v=parseFloat(G('InIng').value);if(!v||v<=0)return;RF.ing.push({emoji:'💰',nombre:'Ingreso rápido',tipo:'Transferencia',monto:v,sumar:'si',ts:Date.now()});addLog('ingreso','Ingreso rapido: +'+fQ(v),v);closeOv('OvIng');});
+G('BtnOkIng').addEventListener('click',function(){
+  var v=parseFloat(G('InIng').value);
+  if(!v||v<=0){alert('Ingresa un monto válido.');return;}
+  if(!RF.ing){alert('Error: no conectado. Recarga la app.');return;}
+  RF.ing.push({emoji:'💰',nombre:'Ingreso rapido',tipo:'Transferencia',monto:v,sumar:'si',ts:Date.now()});
+  addLog('ingreso','Ingreso rapido: +'+fQ(v),v);
+  closeOv('OvIng');
+});
 G('QChips').addEventListener('click',function(e){var ch=e.target.closest('.chip');if(!ch)return;if(ch.id==='ChipOtro'){openOv('OvIng');setTimeout(function(){if(G('InIng'))G('InIng').focus();},100);return;}var m=parseFloat(ch.dataset.q);if(G('InIng'))G('InIng').value=m;openOv('OvIng');});
 
 // EDITAR SALDO / CUENTA
@@ -1054,8 +1065,11 @@ if(G('GMon'))G('GMon').addEventListener('input',updPrev);
 function updPrev(){var v=parseFloat(G('GMon')?G('GMon').value:''),el=G('GPrev');if(!el)return;if(!v||isNaN(v)){el.textContent='';return;}el.textContent=S.moneda==='USD'?'= Q'+(v*S.tasa).toFixed(2)+' (Q'+S.tasa.toFixed(4)+')':'= $'+(v/S.tasa).toFixed(2)+' USD';}
 if(G('GFrq'))G('GFrq').addEventListener('change',function(){if(G('GDW'))G('GDW').style.display=this.value==='Mensual'?'block':'none';});
 G('BtnSvG').addEventListener('click',function(){
-  var nom=G('GNom').value.trim(),monRaw=parseFloat(G('GMon').value),frq=G('GFrq').value,dia=parseInt(G('GDia').value)||null;
-  if(!nom||!monRaw||monRaw<=0)return;
+  var nom=G('GNom').value.trim(),monRaw=parseFloat(G('GMon').value);
+  var frq=G('GFrq')?G('GFrq').value:'Mensual';
+  var dia=G('GDia')?(parseInt(G('GDia').value)||null):null;
+  if(!nom||!monRaw||monRaw<=0){alert('Ingresa nombre y monto.');return;}
+  if(!RF.gastos){alert('Error: no conectado. Recarga la app.');return;}
   var mQ=S.moneda==='USD'?parseFloat((monRaw*S.tasa).toFixed(2)):monRaw;
   var mU=S.moneda==='USD'?monRaw:parseFloat((monRaw/S.tasa).toFixed(2));
   RF.gastos.push({emoji:S.eG,nombre:nom,montoQ:mQ,montoUSD:mU,moneda:S.moneda,tasaUsada:S.moneda==='USD'?S.tasa:null,freq:frq,dia:dia,on:true});
@@ -1066,14 +1080,35 @@ G('BtnSvG').addEventListener('click',function(){
 // INGRESO MODAL
 G('BtnNI').addEventListener('click',function(){buildEG('EgI',EI,S.eI,'i');if(G('INom'))G('INom').value='';if(G('IMon'))G('IMon').value='';G('ModI').classList.add('on');setTimeout(function(){if(G('INom'))G('INom').focus();},150);});
 G('ModI').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
-G('BtnSvI').addEventListener('click',function(){var nom=G('INom').value.trim(),mon=parseFloat(G('IMon').value),tip=G('ITip').value,sum=G('ISum').value;if(!nom||!mon||mon<=0)return;RF.ing.push({emoji:S.eI,nombre:nom,tipo:tip,monto:mon,sumar:sum,ts:Date.now()});addLog('ingreso',tip+': '+S.eI+' '+nom+' (+'+fQ(mon)+')',mon);G('ModI').classList.remove('on');});
+G('BtnSvI').addEventListener('click',function(){
+  var nom=G('INom').value.trim(),mon=parseFloat(G('IMon').value);
+  var tip=G('ITip')?G('ITip').value:'Transferencia';
+  var sum=G('ISum')?G('ISum').value:'si';
+  if(!nom||!mon||mon<=0){alert('Ingresa descripción y monto.');return;}
+  if(!RF.ing){alert('Error: no conectado. Recarga la app.');return;}
+  RF.ing.push({emoji:S.eI,nombre:nom,tipo:tip,monto:mon,sumar:sum,ts:Date.now()});
+  addLog('ingreso',tip+': '+S.eI+' '+nom+' (+'+fQ(mon)+')',mon);
+  G('ModI').classList.remove('on');
+});
 
 // PRÉSTAMO MODAL
 G('BtnNP').addEventListener('click',function(){['PNom','PMon','PCuo','PCuoV','PNot','PDia'].forEach(function(id){if(G(id))G(id).value='';});if(G('PFec'))G('PFec').value=new Date().toISOString().split('T')[0];if(G('PAfe'))G('PAfe').value='si';S.loanT='p';if(G('TtP'))G('TtP').className='tt onr';if(G('TtR'))G('TtR').className='tt';G('ModP').classList.add('on');setTimeout(function(){if(G('PNom'))G('PNom').focus();},150);});
 G('ModP').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
 G('TtP').addEventListener('click',function(){S.loanT='p';G('TtP').className='tt onr';G('TtR').className='tt';});
 G('TtR').addEventListener('click',function(){S.loanT='r';G('TtR').className='tt ong';G('TtP').className='tt';});
-G('BtnSvP').addEventListener('click',function(){var nom=G('PNom').value.trim(),mon=parseFloat(G('PMon').value),fec=G('PFec').value,cuo=parseInt(G('PCuo').value)||null,cuoV=parseFloat(G('PCuoV').value)||null,not=G('PNot').value.trim(),afe=G('PAfe').value,dia=parseInt(G('PDia').value)||null;if(!nom||!mon||mon<=0)return;RF.prest.push({tipo:S.loanT,nombre:nom,monto:mon,fecha:fec||null,cuotas:cuo,cuotaVal:cuoV,nota:not,afecta:afe,dia:dia,liquidado:false});addLog('prestamo',(S.loanT==='p'?'Preste a ':'Me prestaron: ')+nom+' '+fQ(mon),S.loanT==='p'?-mon:mon);G('ModP').classList.remove('on');});
+G('BtnSvP').addEventListener('click',function(){
+  var nom=G('PNom').value.trim(),mon=parseFloat(G('PMon').value);
+  var fec=G('PFec')?G('PFec').value:'';
+  var cuo=G('PCuo')?(parseInt(G('PCuo').value)||null):null;
+  var cuoV=G('PCuoV')?(parseFloat(G('PCuoV').value)||null):null;
+  var not=G('PNot')?G('PNot').value.trim():'';
+  var dia=G('PDia')?(parseInt(G('PDia').value)||null):null;
+  if(!nom||!mon||mon<=0)return;
+  if(!RF.prest){alert('Error: no conectado. Recarga la app.');return;}
+  RF.prest.push({tipo:S.loanT,nombre:nom,monto:mon,fecha:fec||null,cuotas:cuo,cuotaVal:cuoV,nota:not,dia:dia,liquidado:false});
+  addLog('prestamo',(S.loanT==='p'?'Preste a ':'Me prestaron: ')+nom+' '+fQ(mon),S.loanT==='p'?-mon:mon);
+  G('ModP').classList.remove('on');
+});
 
 // CRÉDITO MODAL
 G('BtnNC').addEventListener('click',function(){['CNom','CObj','CMon','CCuo','CCuoV','CNot','CDia'].forEach(function(id){if(G(id))G(id).value='';});if(G('CFec'))G('CFec').value=new Date().toISOString().split('T')[0];S.creditT='d';if(G('TcD'))G('TcD').className='tt ono';if(G('TcY'))G('TcY').className='tt';G('ModC').classList.add('on');setTimeout(function(){if(G('CNom'))G('CNom').focus();},150);});
