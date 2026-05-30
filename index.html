@@ -760,6 +760,17 @@ AUTH.onAuthStateChanged(function(user){
     if(av){if(user.photoURL)av.src=user.photoURL;else av.style.display='none';}
     // user info saved in users/ path below
     initRF(user.uid);detachAll();startListeners();fetchTasa();
+    // Load trabajo config from Firebase for cross-device sync
+    DB.ref('users/'+user.uid+'/config').once('value',function(snap){
+      var cfg=snap.val()||{};
+      if(cfg.tPayH&&cfg.tPayH>0){
+        tPayH=cfg.tPayH;
+        localStorage.setItem('tPayH',tPayH);
+        if(cfg.tMoneda)tMoneda=cfg.tMoneda;
+        var inp=document.getElementById('TPayH');if(inp)inp.value=tPayH;
+        updSueldoInfo();
+      }
+    });
     // Show currency pref on first login
     var monPref=localStorage.getItem('monPref_'+user.uid);
     if(!monPref){
@@ -1176,8 +1187,14 @@ G('BtnTrabCancel').addEventListener('click',function(){G('OvTrabajo').classList.
 G('OvTrabajo').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
 G('BtnTrabOk').addEventListener('click',function(){
   var mes=G('TrabMes').value.trim();
-  if(mes&&mes.length!==7){G('OvTrabInfo').textContent='Formato incorrecto. Usa YYYY-MM';return;}
   var tipo=_trabPending.tipo;
+  if(!tipo){G('OvTrabajo').classList.remove('on');return;}
+  if(mes&&mes.length!==7){
+    // Try to fix: if 7 chars but wrong format, just use it
+    if(!/^\d{4}-\d{2}$/.test(mes)){
+      G('OvTrabInfo').textContent='Formato: YYYY-MM (ej: 2026-05)';return;
+    }
+  }
   if(tipo==='dia'){
     var qd=tPayHInQ()*8;
     var fd=G('TrabFecha')?G('TrabFecha').value:'';
@@ -1206,12 +1223,41 @@ G('BtnTrabOk').addEventListener('click',function(){
 document.addEventListener('click',function(e){
   var t=e.target.closest('#BtnSvSueldo,#TcQ,#TcU,#BtnDiaTrab,#BtnHorasMan,#BtnHorasExtra');
   if(!t)return;
-  if(t.id==='BtnSvSueldo'){var v=parseFloat(G('TPayH')?G('TPayH').value:0);if(!v||v<=0){alert('Ingresa un monto valido.');return;}tPayH=v;localStorage.setItem('tPayH',v);localStorage.setItem('tMoneda',tMoneda);updSueldoInfo();t.textContent='Guardado!';setTimeout(function(){t.textContent='Guardar configuracion';},1500);return;}
+  if(t.id==='BtnSvSueldo'){
+    var v=parseFloat(G('TPayH')?G('TPayH').value:0);
+    if(!v||v<=0){alert('Ingresa un monto valido por hora.');return;}
+    tPayH=v;
+    localStorage.setItem('tPayH',v);
+    localStorage.setItem('tMoneda',tMoneda);
+    // Save to Firebase for cross-device sync
+    var uid3=AUTH.currentUser?AUTH.currentUser.uid:null;
+    if(uid3)DB.ref('users/'+uid3+'/config').update({tPayH:v,tMoneda:tMoneda});
+    updSueldoInfo();
+    t.textContent='✅ Guardado!';
+    setTimeout(function(){t.textContent='Guardar configuracion';},1500);
+    return;
+  }
   if(t.id==='TcQ'){tMoneda='GTQ';t.style.background='linear-gradient(135deg,#d4af37,#b8860b)';t.style.color='#0a0800';var u=G('TcU');if(u){u.style.background='none';u.style.color='rgba(212,175,55,.5)';}updSueldoInfo();return;}
   if(t.id==='TcU'){tMoneda='USD';t.style.background='linear-gradient(135deg,#d4af37,#b8860b)';t.style.color='#0a0800';var q2=G('TcQ');if(q2){q2.style.background='none';q2.style.color='rgba(212,175,55,.5)';}updSueldoInfo();return;}
-  if(t.id==='BtnDiaTrab'){if(!tPayH){G('OvTrabTit').textContent='Sin configurar';G('OvTrabDesc').textContent='Primero guarda tu pago por hora arriba';G('OvTrabExtra').style.display='none';G('OvTrabInfo').textContent='';G('OvTrabajo').classList.add('on');return;}abrirModalTrabajo('dia');return;}
-  if(t.id==='BtnHorasMan'){if(!tPayH){G('OvTrabTit').textContent='Sin configurar';G('OvTrabDesc').textContent='Primero guarda tu pago por hora arriba';G('OvTrabExtra').style.display='none';G('OvTrabInfo').textContent='';G('OvTrabajo').classList.add('on');return;}abrirModalTrabajo('manual');return;}
-  if(t.id==='BtnHorasExtra'){abrirModalTrabajo('extra');return;}
+  if(t.id==='BtnDiaTrab'||t.id==='BtnHorasMan'||t.id==='BtnHorasExtra'){
+    if(!tPayH&&t.id!=='BtnHorasExtra'){
+      // No pay configured - ask now
+      var pv=prompt('Primero configura tu pago por hora (en Q o $):');
+      if(!pv||isNaN(parseFloat(pv)))return;
+      tPayH=parseFloat(pv);
+      localStorage.setItem('tPayH',tPayH);
+      // Save to Firebase too
+      var uid2=AUTH.currentUser?AUTH.currentUser.uid:null;
+      if(uid2)DB.ref('users/'+uid2+'/config').update({tPayH:tPayH,tMoneda:tMoneda});
+      // Update UI
+      var inp=document.getElementById('TPayH');if(inp)inp.value=tPayH;
+      updSueldoInfo();
+    }
+    if(t.id==='BtnDiaTrab')abrirModalTrabajo('dia');
+    else if(t.id==='BtnHorasMan')abrirModalTrabajo('manual');
+    else abrirModalTrabajo('extra');
+    return;
+  }
 },true);
 function renderTrabajo(){
   updSueldoInfo();
