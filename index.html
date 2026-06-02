@@ -634,15 +634,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px;margin-top:10px">Monto total en Q (solo extras)</label>
       <input class="b-inp" type="number" id="TrabMonto" placeholder="0.00" inputmode="decimal" style="font-size:22px;display:none"/>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-      <div>
-        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Fecha exacta</label>
-        <input class="b-inp" type="date" id="TrabFecha" style="font-size:14px"/>
+    <div style="margin-bottom:11px">
+      <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(0,255,136,.4);margin-bottom:5px">Fecha del día trabajado</label>
+      <input class="b-inp" type="date" id="TrabFecha" style="font-size:15px"/>
+    </div>
+    <div style="margin-bottom:11px">
+      <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(0,255,136,.4);margin-bottom:5px">¿A qué mes de pago va?</label>
+      <div id="TrabMesBtns" style="display:flex;gap:8px">
+        <button id="TrabMesBtn0" style="flex:1;background:rgba(0,255,136,.08);border:1.5px solid rgba(0,255,136,.3);color:var(--grn);border-radius:9px;padding:10px 6px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer" onclick="selTrabMes(0)"></button>
+        <button id="TrabMesBtn1" style="flex:1;background:transparent;border:1.5px solid rgba(0,255,136,.12);color:var(--sub);border-radius:9px;padding:10px 6px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer" onclick="selTrabMes(1)"></button>
+        <button id="TrabMesBtn2" style="flex:1;background:transparent;border:1.5px solid rgba(0,255,136,.12);color:var(--sub);border-radius:9px;padding:10px 6px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer" onclick="selTrabMes(2)"></button>
       </div>
-      <div>
-        <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(212,175,55,.4);margin-bottom:4px">Período (mes)</label>
-        <input class="b-inp" id="TrabMes" placeholder="Auto desde fecha" style="font-size:14px"/>
-      </div>
+      <input type="hidden" id="TrabMes"/>
     </div>
     <div id="OvTrabInfo" style="font-size:12px;color:rgba(212,175,55,.6);margin-top:8px;text-align:center"></div>
     <div class="b-row">
@@ -760,6 +763,25 @@ AUTH.onAuthStateChanged(function(user){
     if(av){if(user.photoURL)av.src=user.photoURL;else av.style.display='none';}
     // user info saved in users/ path below
     initRF(user.uid);detachAll();startListeners();fetchTasa();
+    // Migrate old trabajo records: add fecha from ts if missing
+    DB.ref('users/'+user.uid+'/trabajo').once('value',function(snap){
+      var data=snap.val()||{};
+      Object.keys(data).forEach(function(k){
+        var d=data[k];
+        if(d&&!d.fecha&&d.ts){
+          var fd=new Date(d.ts);
+          var fechaStr=fd.getFullYear()+'-'+(fd.getMonth()+1<10?'0':'')+(fd.getMonth()+1)+'-'+(fd.getDate()<10?'0':'')+fd.getDate();
+          DB.ref('users/'+user.uid+'/trabajo/'+k+'/fecha').set(fechaStr);
+        }
+        // Also fix mes if missing
+        if(d&&!d.mes&&d.ts){
+          var fd2=new Date(d.ts);
+          var mesStr=fd2.getFullYear()+'-'+(fd2.getMonth()+1<10?'0':'')+(fd2.getMonth()+1);
+          DB.ref('users/'+user.uid+'/trabajo/'+k+'/mes').set(mesStr);
+        }
+      });
+    });
+
     // Load trabajo config from Firebase for cross-device sync
     DB.ref('users/'+user.uid+'/config').once('value',function(snap){
       var cfg=snap.val()||{};
@@ -877,15 +899,22 @@ function renderG(arr){
   var el=G('LG'),tot=0,h='';
   if(!el)return;
   if(!arr.length){el.innerHTML='<div class="empty">Sin gastos. Toca + Nuevo.</div>';if(G('TG'))G('TG').style.display='none';return;}
+  // Sort: monthly first, then by ts desc
+  arr.sort(function(a,b){
+    if(a.freq==='Mensual'&&b.freq!=='Mensual')return -1;
+    if(a.freq!=='Mensual'&&b.freq==='Mensual')return 1;
+    return (b.ts||0)-(a.ts||0);
+  });
   arr.forEach(function(g){
     if(g.on)tot+=g.montoQ;
     var d=dC(g.dia),b='';
     if(d===0)b='<span class="bdg h">¡Hoy!</span>';
     else if(d===1)b='<span class="bdg p">Mañana</span>';
     else if(d!==null&&d<=5)b='<span class="bdg d">En '+d+'d</span>';
+    var fechaStr=g.ts?'<span style="color:var(--sub);font-size:10px"> · '+fH(g.ts)+'</span>':'';
     h+='<div class="it ir'+(g.on?'':' off')+'">';
     h+='<div class="it-ico rb" data-a="cg" data-k="'+g.fbKey+'">'+g.emoji+'</div>';
-    h+='<div class="it-body"><div class="it-name">'+g.nombre+b+'</div><div class="it-meta">'+g.freq+(g.dia?' · día '+g.dia:'')+(g.tasaUsada?' · @Q'+parseFloat(g.tasaUsada).toFixed(2):'')+'</div></div>';
+    h+='<div class="it-body"><div class="it-name">'+g.nombre+b+'</div><div class="it-meta">'+g.freq+(g.dia?' · día '+g.dia:'')+(g.tasaUsada?' · @Q'+parseFloat(g.tasaUsada).toFixed(2):'')+fechaStr+'</div></div>';
     h+='<div class="it-r"><div class="it-amt"><div class="it-q r">'+fQ(g.montoQ)+'</div>'+(g.montoUSD?'<div class="it-usd">$'+g.montoUSD.toFixed(2)+'</div>':'')+'</div>';
     h+='<button class="tog'+(g.on?' on':'')+'" data-a="tg" data-k="'+g.fbKey+'" data-v="'+(g.on?'0':'1')+'"></button>';
     h+='<button class="xb" data-a="dg" data-k="'+g.fbKey+'" data-m="'+g.montoQ+'">✕</button></div></div>';
@@ -1083,7 +1112,7 @@ G('BtnSvG').addEventListener('click',function(){
   if(!RF.gastos){alert('Error: no conectado. Recarga la app.');return;}
   var mQ=S.moneda==='USD'?parseFloat((monRaw*S.tasa).toFixed(2)):monRaw;
   var mU=S.moneda==='USD'?monRaw:parseFloat((monRaw/S.tasa).toFixed(2));
-  RF.gastos.push({emoji:S.eG,nombre:nom,montoQ:mQ,montoUSD:mU,moneda:S.moneda,tasaUsada:S.moneda==='USD'?S.tasa:null,freq:frq,dia:dia,on:true});
+  RF.gastos.push({emoji:S.eG,nombre:nom,montoQ:mQ,montoUSD:mU,moneda:S.moneda,tasaUsada:S.moneda==='USD'?S.tasa:null,freq:frq,dia:dia,on:true,ts:Date.now()});
   addLog('add','Gasto: '+S.eG+' '+nom+' ('+fQ(mQ)+')',mQ);
   G('ModG').classList.remove('on');
 });
@@ -1132,6 +1161,52 @@ G('BtnSvC').addEventListener('click',function(){var nom=G('CNom').value.trim(),o
 function tPayHInQ(){return tMoneda==='USD'?tPayH*S.tasa:tPayH;}
 function mesActual(){var now=new Date();return now.getFullYear()+'-'+(now.getMonth()+1<10?'0':'')+(now.getMonth()+1);}
 function updSueldoInfo(){var el=G('TSueldoInfo');if(!el)return;if(!tPayH){el.textContent='Sin configurar.';return;}var q=tPayHInQ();el.innerHTML='Hora: '+(tMoneda==='USD'?'$'+tPayH.toFixed(2)+' = ':'')+'Q'+q.toFixed(2)+' | Dia 8h: Q'+(q*8).toFixed(2);}
+
+var MESES_ES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function getMesOpt(offset){
+  var now=new Date();
+  var m=new Date(now.getFullYear(),now.getMonth()+offset,1);
+  return {
+    val:m.getFullYear()+'-'+(m.getMonth()+1<10?'0':'')+(m.getMonth()+1),
+    lbl:MESES_ES[m.getMonth()]+' '+m.getFullYear()
+  };
+}
+
+function initTrabMesBtns(){
+  var opts=[getMesOpt(-1),getMesOpt(0),getMesOpt(1)];
+  for(var i=0;i<3;i++){
+    var btn=G('TrabMesBtn'+i);
+    if(btn){btn.textContent=opts[i].lbl;btn.dataset.val=opts[i].val;}
+  }
+  // Default: select current month
+  selTrabMes(1);
+}
+
+window.selTrabMes=function(idx){
+  _trabPending.mesIdx=idx;
+  var btn=G('TrabMesBtn'+idx);
+  if(!btn)return;
+  var val=btn.dataset.val;
+  if(G('TrabMes'))G('TrabMes').value=val;
+  // Style buttons
+  for(var i=0;i<3;i++){
+    var b=G('TrabMesBtn'+i);
+    if(!b)continue;
+    if(i===idx){
+      b.style.background='rgba(0,255,136,.15)';
+      b.style.borderColor='var(--grn)';
+      b.style.color='var(--grn)';
+      b.style.fontWeight='800';
+    } else {
+      b.style.background='transparent';
+      b.style.borderColor='rgba(0,255,136,.12)';
+      b.style.color='var(--sub)';
+      b.style.fontWeight='600';
+    }
+  }
+};
+
 var _trabPending={};
 function abrirModalTrabajo(tipo){
   var ov=G('OvTrabajo');if(!ov)return;
@@ -1284,21 +1359,33 @@ function renderTrabajo(){
     var resEl=G('TResumen');if(resEl)resEl.innerHTML=rh||'<div class="empty">Sin registros aun.</div>';
     var lh='';
     arr.slice(0,30).forEach(function(d){
-      var parts=d.mes.split('-'),mesNom=meses[parseInt(parts[1])-1]+' '+parts[0];
-      var fechaStr='';
+      var payParts=d.mes.split('-');
+      var mesNom=meses[parseInt(payParts[1])-1]+' '+payParts[0];
+      // Fecha exacta del día trabajado
+      var fechaDia='';
+      var fechaDiaLargo='';
       if(d.fecha){
         var fd=new Date(d.fecha+'T12:00');
-        fechaStr=fd.getDate()+' '+meses[fd.getMonth()].slice(0,3);
+        fechaDia=fd.getDate()+' '+meses[fd.getMonth()].slice(0,3);
+        fechaDiaLargo=fd.getDate()+' de '+meses[fd.getMonth()]+' '+fd.getFullYear();
+      } else if(d.ts){
+        var fd2=new Date(d.ts);
+        fechaDia=fd2.getDate()+' '+meses[fd2.getMonth()].slice(0,3);
+        fechaDiaLargo=fd2.getDate()+' de '+meses[fd2.getMonth()]+' '+fd2.getFullYear();
       }
       var usdStr=d.montoUSD?'$'+d.montoUSD.toFixed(2):'$'+(d.monto/S.tasa).toFixed(2);
+      var tipoIco=d.esExtra?'🔥':d.horas===8?'☀️':'⏱️';
+      var tipoTxt=d.esExtra?'Extra':'Día trabajado';
       lh+='<div class="it '+(d.pagado?'off':'ig')+'">';
-      lh+='<div class="it-ico gb">'+(d.esExtra?'🔥':d.horas===8?'☀️':'⏱️')+'</div>';
+      lh+='<div class="it-ico gb">'+tipoIco+'</div>';
       lh+='<div class="it-body">';
-      lh+='<div class="it-name">'+(fechaStr?'<strong>'+fechaStr+'</strong> · ':'')+d.horas+'h'+(d.esExtra?' extra':'')+'</div>';
-      lh+='<div class="it-meta">'+mesNom+' · '+(d.pagado?'✅ Cobrado':'⏳ Pendiente')+'</div>';
+      // Line 1: fecha exacta + tipo
+      lh+='<div class="it-name" style="font-size:13px;font-weight:700">'+(fechaDia?'<span style="color:var(--grn2)">'+fechaDia+'</span> · ':'')+tipoTxt+(d.horas!==8&&!d.esExtra?' ('+d.horas+'h)':'')+'</div>';
+      // Line 2: mes de pago + estado
+      lh+='<div class="it-meta">📅 Pago: <strong style="color:var(--grn)">'+mesNom+'</strong> · '+(d.pagado?'✅ Cobrado':'⏳ Pendiente')+'</div>';
       lh+='</div>';
-      lh+='<div class="it-r" style="flex-direction:column;align-items:flex-end;gap:2px">';
-      lh+='<div class="it-q g">Q'+d.monto.toFixed(2)+'</div>';
+      lh+='<div class="it-r" style="flex-direction:column;align-items:flex-end;gap:3px">';
+      lh+='<div class="it-q g" style="font-size:13px;font-weight:700">Q'+d.monto.toFixed(2)+'</div>';
       lh+='<div style="font-size:10px;color:var(--sub)">'+usdStr+'</div>';
       lh+='<button class="xb" data-a="tdel" data-k="'+d.fbKey+'">✕</button>';
       lh+='</div></div>';
